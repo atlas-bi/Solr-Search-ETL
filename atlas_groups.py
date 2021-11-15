@@ -19,6 +19,9 @@ def build_doc(group: SimpleNamespace) -> Dict:
         "visible": "Y",
         "orphan": "N",
         "runs": 10,
+        "linked_name": (
+            [x for x in group.users.split("~|~") if x] if group.users else []
+        ),
     }
 
     return clean_doc(doc)
@@ -34,6 +37,8 @@ select
 , groupemail as email
 , grouptype as group_type
 , groupsource as group_source
+, STUFF((select '~|~' +  u.FullName from app.User_NameData u inner join dbo.UserGroupsMembership m on u.UserId = m.UserId where m.GroupId = g.GroupId  FOR XML PATH('')), 1, 3, '') users
+
 from dbo.UserGroups g"""
 )
 
