@@ -105,7 +105,7 @@ cursor.execute(
 , r.LastModifiedDate as modified_at
 , r.EpicMasterFile as system_identifier
 , r.EpicRecordID as system_id
-, r.DefaultVisibilityYN as visible
+, case when isnull(r.OrphanedReportObjectYN, 'N') = 'N' and report_type.Visible = 'Y' and r.DefaultVisibilityYN = 'Y' and isnull(d.Hidden,'N') = 'N' then 'Y' else 'N' end as visible
 , isnull(r.OrphanedReportObjectYN, 'N') as orphan
 , r.EpicReportTemplateId as system_template_id
 , r.LastLoadDate as etl_date
@@ -134,11 +134,11 @@ cursor.execute(
 , STUFF((select '~|~' +  t.name from app.ReportObjectDocTerms dt inner join app.Term t on dt.TermId = t.termid where dt.reportobjectid = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') term_name 
 , STUFF((select '~|~' +  t.Summary + '~|~' + t.TechnicalDefinition from app.ReportObjectDocTerms dt inner join app.Term t on dt.TermId = t.termid where dt.reportobjectid = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') term_description
 
-, STUFF((select '~|~' +  p.name from app.DP_ReportAnnotation a inner join app.DP_DataProject p on a.DataProjectId = p.DataProjectID where a.ReportId = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') collection_name 
-, STUFF((select '~|~' +  p.Description + '~|~' + p.Purpose from app.DP_ReportAnnotation a inner join app.DP_DataProject p on a.DataProjectId = p.DataProjectID where a.ReportId = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') collection_description
+, STUFF((select '~|~' +  p.name from app.DP_ReportAnnotation a inner join app.DP_DataProject p on a.DataProjectId = p.DataProjectID where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_name 
+, STUFF((select '~|~' +  p.Description + '~|~' + p.Purpose from app.DP_ReportAnnotation a inner join app.DP_DataProject p on a.DataProjectId = p.DataProjectID where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_description
 
-, STUFF((select '~|~' +  i.name from app.DP_ReportAnnotation a inner join app.DP_DataProject p on a.DataProjectId = p.DataProjectID inner join app.DP_DataInitiative i on i.DataInitiativeID=p.DataInitiativeID where a.ReportId = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') initiative_name 
-, STUFF((select '~|~' +  i.Description + '~|~' + p.Purpose from app.DP_ReportAnnotation a inner join app.DP_DataProject p on a.DataProjectId = p.DataProjectID inner join app.DP_DataInitiative i on i.DataInitiativeID=p.DataInitiativeID where a.ReportId = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') initiative_description
+, STUFF((select '~|~' +  i.name from app.DP_ReportAnnotation a inner join app.DP_DataProject p on a.DataProjectId = p.DataProjectID inner join app.DP_DataInitiative i on i.DataInitiativeID=p.DataInitiativeID where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_name 
+, STUFF((select '~|~' +  i.Description + '~|~' + p.Purpose from app.DP_ReportAnnotation a inner join app.DP_DataProject p on a.DataProjectId = p.DataProjectID inner join app.DP_DataInitiative i on i.DataInitiativeID=p.DataInitiativeID where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_description
 
 
 

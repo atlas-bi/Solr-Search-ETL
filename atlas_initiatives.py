@@ -12,7 +12,7 @@ def build_doc(initiative: SimpleNamespace) -> Dict:
         "atlas_id": initiative.initiative_id,
         "type": "initiatives",
         "name": initiative.name,
-        "visible": "Y",
+        "visible": initiative.visible,
         "orphan": "N",
         "runs": 10,
         "operations_owner": str(initiative.ops_owner),
@@ -75,16 +75,16 @@ cursor.execute(
 , s.name as strategic_importance
 , i.LastUpdateDate as modified_at
 , updater.Fullname as modified_by
+, case when isnull((select Value from app.GlobalSiteSettings where Name = 'initiatives_search_visibility'),'N') = 'N' then 'N' else 'Y' end as visible
+, STUFF((select '~|~' +  p.name from app.DP_DataProject p where i.DataInitiativeID=p.datainitiativeid and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_name 
+, STUFF((select '~|~' +  p.Purpose + '~|~' + p.description from app.DP_DataProject p where i.DataInitiativeID=p.datainitiativeid and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_description
 
-, STUFF((select '~|~' +  p.name from app.DP_DataProject p where i.DataInitiativeID=p.datainitiativeid  FOR XML PATH('')), 1, 3, '') collection_name 
-, STUFF((select '~|~' +  p.Purpose + '~|~' + p.description from app.DP_DataProject p where i.DataInitiativeID=p.datainitiativeid FOR XML PATH('')), 1, 3, '') collection_description
+, STUFF((select '~|~' +  t.name from app.DP_DataProject p inner join app.DP_TermAnnotation a on p.DataProjectID = a.DataProjectId inner join app.term t on a.TermId=t.TermId where i.DataInitiativeID=p.datainitiativeid and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') term_name 
+, STUFF((select '~|~' +  t.Summary + '~|~' + t.TechnicalDefinition from app.DP_DataProject p inner join app.DP_TermAnnotation a on p.DataProjectID = a.DataProjectId inner join app.term t on a.TermId=t.TermId where i.DataInitiativeID=p.datainitiativeid and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') term_description 
 
-, STUFF((select '~|~' +  t.name from app.DP_DataProject p inner join app.DP_TermAnnotation a on p.DataProjectID = a.DataProjectId inner join app.term t on a.TermId=t.TermId where i.DataInitiativeID=p.datainitiativeid  FOR XML PATH('')), 1, 3, '') term_name 
-, STUFF((select '~|~' +  t.Summary + '~|~' + t.TechnicalDefinition from app.DP_DataProject p inner join app.DP_TermAnnotation a on p.DataProjectID = a.DataProjectId inner join app.term t on a.TermId=t.TermId where i.DataInitiativeID=p.datainitiativeid  FOR XML PATH('')), 1, 3, '') term_description 
-
-, STUFF((select '~|~' +  t.name from app.DP_DataProject p inner join app.DP_ReportAnnotation a on p.DataProjectID = a.DataProjectId inner join dbo.ReportObject t on a.ReportId = t.ReportObjectID where i.DataInitiativeID=p.datainitiativeid  FOR XML PATH('')), 1, 3, '') report_name 
-, STUFF((select '~|~' +  t.DisplayTitle from app.DP_DataProject p inner join app.DP_ReportAnnotation a on p.DataProjectID = a.DataProjectId inner join dbo.ReportObject t on a.ReportId = t.ReportObjectID where i.DataInitiativeID=p.datainitiativeid  and displaytitle <> NULL FOR XML PATH('')), 1, 3, '') linked_name 
-, STUFF((select '~|~' +  r.Description + '~|~' + r.DetailedDescription + '~|~' + r.RepositoryDescription + '~|~' + d.DeveloperDescription + '~|~' + d.KeyAssumptions from app.DP_DataProject p inner join app.DP_ReportAnnotation a on p.DataProjectID = a.DataProjectId inner join dbo.ReportObject r on r.ReportObjectID = a.ReportId left outer join app.ReportObject_doc d on r.ReportObjectID = d.ReportObjectID where i.DataInitiativeID=p.datainitiativeid  FOR XML PATH('')), 1, 3, '') report_description 
+, STUFF((select '~|~' +  t.name from app.DP_DataProject p inner join app.DP_ReportAnnotation a on p.DataProjectID = a.DataProjectId inner join dbo.ReportObject t on a.ReportId = t.ReportObjectID left outer join app.reportobject_doc d on t.reportobjectid = d.reportobjectid where i.DataInitiativeID=p.datainitiativeid and isnull(p.Hidden,'N')='N' and isnull(d.Hidden,'N') = 'N' FOR XML PATH('')), 1, 3, '') report_name 
+, STUFF((select '~|~' +  t.DisplayTitle from app.DP_DataProject p inner join app.DP_ReportAnnotation a on p.DataProjectID = a.DataProjectId inner join dbo.ReportObject t on a.ReportId = t.ReportObjectID left outer join app.reportobject_doc d on d.reportobjectid = t.reportobjectid where i.DataInitiativeID=p.datainitiativeid and isnull(p.Hidden,'N')='N' and displaytitle <> NULL and isnull(d.Hidden,'N') = 'N' FOR XML PATH('')), 1, 3, '') linked_name 
+, STUFF((select '~|~' +  r.Description + '~|~' + r.DetailedDescription + '~|~' + r.RepositoryDescription + '~|~' + d.DeveloperDescription + '~|~' + d.KeyAssumptions from app.DP_DataProject p inner join app.DP_ReportAnnotation a on p.DataProjectID = a.DataProjectId inner join dbo.ReportObject r on r.ReportObjectID = a.ReportId left outer join app.ReportObject_doc d on r.ReportObjectID = d.ReportObjectID where i.DataInitiativeID=p.datainitiativeid and isnull(p.Hidden,'N')='N' and r.DefaultVisibilityYN = 'Y' and isnull(d.Hidden,'N') = 'N' FOR XML PATH('')), 1, 3, '') report_description 
 
 from app.DP_DataInitiative i
 left outer join app.User_NameData ops_owner on i.OperationOwnerID = ops_owner.UserId

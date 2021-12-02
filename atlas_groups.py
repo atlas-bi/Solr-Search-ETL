@@ -16,7 +16,7 @@ def build_doc(group: SimpleNamespace) -> Dict:
         "email": group.email,
         "group_type": group.group_type,
         "group_source": group.group_source,
-        "visible": "Y",
+        "visible": group.visible,
         "orphan": "N",
         "runs": 10,
         "linked_name": (
@@ -37,6 +37,7 @@ select
 , groupemail as email
 , grouptype as group_type
 , groupsource as group_source
+, case when isnull((select Value from app.GlobalSiteSettings where Name = 'groups_search_visibility'),'N') = 'N' then 'N' else 'Y' end as visible
 , STUFF((select '~|~' +  u.FullName from app.User_NameData u inner join dbo.UserGroupsMembership m on u.UserId = m.UserId where m.GroupId = g.GroupId  FOR XML PATH('')), 1, 3, '') users
 
 from dbo.UserGroups g"""

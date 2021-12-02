@@ -22,7 +22,7 @@ def build_doc(user: SimpleNamespace) -> Dict:
         "user_groups": (
             [x.strip() for x in user.groups.split("|")] if user.groups else []
         ),
-        "visible": "Y",
+        "visible": user.visible,
         "orphan": "N",
         "runs": 10,
     }
@@ -38,6 +38,7 @@ cursor.execute(
 , employeeid as employee_id
 , email as email
 , epicid as system_id
+, , case when isnull((select Value from app.GlobalSiteSettings where Name = 'users_search_visibility'),'N') = 'N' then 'N' else 'Y' end as visible
 , STUFF((select '|' +  r.name from app.UserRoleLinks l inner join app.userRoles r on l.UserRolesId = r.UserRolesId where l.userid=u.userid FOR XML PATH('')), 1, 1, '') roles
 
 , stuff((select '|' + g.GroupName from dbo.UserGroups g inner join dbo.UserGroupsMembership m on g.GroupId = m.GroupId where m.UserId = u.userid FOR XML PATH('')), 1, 1, '') groups

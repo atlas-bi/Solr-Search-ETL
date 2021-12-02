@@ -12,7 +12,7 @@ def build_doc(term: SimpleNamespace) -> Dict:
         "atlas_id": term.term_id,
         "type": "terms",
         "name": term.name,
-        "visible": "Y",
+        "visible": term.visible,
         "orphan": "N",
         "runs": 10,
         "description": [term.summary, term.technical_definition],
@@ -80,17 +80,17 @@ select
 , ValidToDateTime as valid_to
 , t.LastUpdatedDateTime as modified_at
 , updater.Fullname as modified_by
+, case when isnull((select Value from app.GlobalSiteSettings where Name = 'terms_search_visibility'),'N') = 'N' then 'N' else 'Y' end as visible
+, STUFF((select '~|~' +  p.name from app.DP_TermAnnotation a inner join app.DP_DataProject p on a.DataProjectId=p.DataProjectID where a.TermId=t.TermId and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_name 
+, STUFF((select '~|~' +  p.description from app.DP_TermAnnotation a inner join app.DP_DataProject p on a.DataProjectId=p.DataProjectID where a.TermId=t.TermId and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_description
 
-, STUFF((select '~|~' +  p.name from app.DP_TermAnnotation a inner join app.DP_DataProject p on a.DataProjectId=p.DataProjectID where a.TermId=t.TermId FOR XML PATH('')), 1, 3, '') collection_name 
-, STUFF((select '~|~' +  p.description from app.DP_TermAnnotation a inner join app.DP_DataProject p on a.DataProjectId=p.DataProjectID where a.TermId=t.TermId FOR XML PATH('')), 1, 3, '') collection_description
+, STUFF((select '~|~' +  i.name from app.DP_TermAnnotation a inner join app.DP_DataProject p on a.DataProjectId=p.DataProjectID inner join app.DP_DataInitiative i on i.DataInitiativeID=p.datainitiativeid where a.TermId=t.TermId and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_name 
+, STUFF((select '~|~' +  i.description from app.DP_TermAnnotation a inner join app.DP_DataProject p on a.DataProjectId=p.DataProjectID inner join app.DP_DataInitiative i on i.DataInitiativeID=p.datainitiativeid where a.TermId=t.TermId and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_description
 
-, STUFF((select '~|~' +  i.name from app.DP_TermAnnotation a inner join app.DP_DataProject p on a.DataProjectId=p.DataProjectID inner join app.DP_DataInitiative i on i.DataInitiativeID=p.datainitiativeid where a.TermId=t.TermId FOR XML PATH('')), 1, 3, '') initiative_name 
-, STUFF((select '~|~' +  i.description from app.DP_TermAnnotation a inner join app.DP_DataProject p on a.DataProjectId=p.DataProjectID inner join app.DP_DataInitiative i on i.DataInitiativeID=p.datainitiativeid where a.TermId=t.TermId FOR XML PATH('')), 1, 3, '') initiative_description
+, STUFF((select '~|~' +  r.name from app.ReportObjectDocTerms a inner join dbo.ReportObject r on a.ReportObjectID=r.ReportObjectID left outer join app.reportobject_doc d on d.reportobjectid = r.reportobjectid where a.TermId=t.TermId and isnull(d.hidden,'N')='N' FOR XML PATH('')), 1, 3, '') report_name 
+, STUFF((select '~|~' +  r.DisplayTitle from app.ReportObjectDocTerms a inner join dbo.ReportObject r on a.ReportObjectID=r.ReportObjectID left outer join app.reportobject_doc d on d.reportobjectid = r.reportobjectid where a.TermId=t.TermId and r.DisplayTitle is not null and isnull(d.hidden,'N')='N' FOR XML PATH('')), 1, 3, '') linked_name 
 
-, STUFF((select '~|~' +  r.name from app.ReportObjectDocTerms a inner join dbo.ReportObject r on a.ReportObjectID=r.ReportObjectID where a.TermId=t.TermId FOR XML PATH('')), 1, 3, '') report_name 
-, STUFF((select '~|~' +  r.DisplayTitle from app.ReportObjectDocTerms a inner join dbo.ReportObject r on a.ReportObjectID=r.ReportObjectID where a.TermId=t.TermId and r.DisplayTitle is not null FOR XML PATH('')), 1, 3, '') linked_name 
-
-, STUFF((select '~|~' +  d.DeveloperDescription + '~|~' + d.KeyAssumptions  + '~|~' + r.Description +  '~|~' + r.DetailedDescription + '~|~' + r.RepositoryDescription from app.ReportObjectDocTerms a inner join dbo.ReportObject r on a.ReportObjectID=r.ReportObjectID inner join app.ReportObject_doc d on r.reportobjectid = d.reportobjectid where a.TermId=t.TermId and r.DisplayTitle is not null FOR XML PATH('')), 1, 3, '') linked_description
+, STUFF((select '~|~' +  d.DeveloperDescription + '~|~' + d.KeyAssumptions  + '~|~' + r.Description +  '~|~' + r.DetailedDescription + '~|~' + r.RepositoryDescription from app.ReportObjectDocTerms a inner join dbo.ReportObject r on a.ReportObjectID=r.ReportObjectID inner join app.ReportObject_doc d on r.reportobjectid = d.reportobjectid where a.TermId=t.TermId and r.DisplayTitle is not null and isnull(d.hidden,'N')='N' FOR XML PATH('')), 1, 3, '') linked_description
 
 
 
