@@ -24,6 +24,7 @@ def build_doc(report: SimpleNamespace) -> Dict:
         ],
         "certification": report.certification_tag,
         "report_type": report.report_type,
+        "report_type_id": report.report_type_id,
         "author": str(report.created_by),
         "report_last_updated_by": str(report.modified_by),
         "report_last_updated": solr_date(report.modified_at),
@@ -100,6 +101,7 @@ cursor.execute(
 , r.RepositoryDescription as system_description
 , tag.CertName as certification_tag
 , isnull(report_type.ShortName, report_type.name) as report_type
+, r.reportobjecttypeid as report_type_id
 , author.Fullname as created_by
 , updater.Fullname as modified_by
 , r.LastModifiedDate as modified_at
@@ -114,7 +116,7 @@ cursor.execute(
 , STUFF((select '~|~' +  f.FragilityTagName from app.ReportObjectDocFragilityTags t inner join app.FragilityTag f on t.FragilityTagID = f.FragilityTagID where t.ReportObjectId = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') tag 
 
 
-, case when d.ReportObjectID <> NULL then 'Y' else 'N' end as documented
+, case when isnull(cast(d.ReportObjectID as nvarchar),'N') = 'N' then 'N' else 'Y' end as documented
 , d.DoNotPurge as do_not_purge
 , d.EnabledForHyperspace  as enabled_for_hyperspace
 , doc_updater.Fullname as updated_by
