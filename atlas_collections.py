@@ -2,7 +2,15 @@ from functools import partial
 from types import SimpleNamespace
 from typing import Dict
 
-from functions import clean_doc, connect, rows, solr_date, solr_load_batch
+import settings
+from functions import (
+    clean_description,
+    clean_doc,
+    connect,
+    rows,
+    solr_date,
+    solr_load_batch,
+)
 
 
 def build_doc(collection: SimpleNamespace) -> Dict:
@@ -15,7 +23,10 @@ def build_doc(collection: SimpleNamespace) -> Dict:
         "visible": collection.visible,
         "orphan": "N",
         "runs": 10,
-        "description": [collection.search_summary, collection.description],
+        "description": [
+            clean_description(collection.search_summary),
+            clean_description(collection.description),
+        ],
         "last_updated": solr_date(collection.modified_at),
         "updated_by": str(collection.modified_by),
         "related_initiatives": (
@@ -39,17 +50,29 @@ def build_doc(collection: SimpleNamespace) -> Dict:
             else []
         ),
         "linked_description": (
-            [x for x in collection.initiative_description.split("~|~") if x]
+            [
+                clean_description(x)
+                for x in collection.initiative_description.split("~|~")
+                if x
+            ]
             if collection.initiative_description
             else []
         )
         + (
-            [x for x in collection.term_description.split("~|~") if x]
+            [
+                clean_description(x)
+                for x in collection.term_description.split("~|~")
+                if x
+            ]
             if collection.term_description
             else []
         )
         + (
-            [x for x in collection.linked_description.split("~|~") if x]
+            [
+                clean_description(x)
+                for x in collection.linked_description.split("~|~")
+                if x
+            ]
             if collection.linked_description
             else []
         ),
@@ -91,7 +114,7 @@ left outer join app.User_NameData updater on p.LastUpdateUser = updater.UserId
 
 columns = [column[0] for column in cursor.description]
 
-batch_loader = partial(solr_load_batch, build_doc)
+batch_loader = partial(solr_load_batch, build_doc, settings.SOLR_URL)
 list(map(batch_loader, rows(cursor, columns)))
 
 cnxn.close()

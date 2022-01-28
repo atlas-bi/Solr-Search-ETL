@@ -2,7 +2,15 @@ from functools import partial
 from types import SimpleNamespace
 from typing import Dict
 
-from functions import clean_doc, connect, rows, solr_date, solr_load_batch
+import settings
+from functions import (
+    clean_description,
+    clean_doc,
+    connect,
+    rows,
+    solr_date,
+    solr_load_batch,
+)
 
 
 def build_doc(term: SimpleNamespace) -> Dict:
@@ -15,7 +23,10 @@ def build_doc(term: SimpleNamespace) -> Dict:
         "visible": term.visible,
         "orphan": "N",
         "runs": 10,
-        "description": [term.summary, term.technical_definition],
+        "description": [
+            clean_description(term.summary),
+            clean_description(term.technical_definition),
+        ],
         "approved": term.approved or "N",
         "approval_date": solr_date(term.approved_at),
         "approved_by": str(term.approved_by),
@@ -43,17 +54,25 @@ def build_doc(term: SimpleNamespace) -> Dict:
             [x for x in term.linked_name.split("~|~") if x] if term.linked_name else []
         ),
         "linked_description": (
-            [x for x in term.collection_description.split("~|~") if x]
+            [
+                clean_description(x)
+                for x in term.collection_description.split("~|~")
+                if x
+            ]
             if term.collection_description
             else []
         )
         + (
-            [x for x in term.initiative_description.split("~|~") if x]
+            [
+                clean_description(x)
+                for x in term.initiative_description.split("~|~")
+                if x
+            ]
             if term.initiative_description
             else []
         )
         + (
-            [x for x in term.linked_description.split("~|~") if x]
+            [clean_description(x) for x in term.linked_description.split("~|~") if x]
             if term.linked_description
             else []
         ),
@@ -103,7 +122,7 @@ left outer join app.User_NameData updater on t.UpdatedByUserId = updater.UserId
 
 columns = [column[0] for column in cursor.description]
 
-batch_loader = partial(solr_load_batch, build_doc)
+batch_loader = partial(solr_load_batch, build_doc, settings.SOLR_URL)
 list(map(batch_loader, rows(cursor, columns)))
 
 cnxn.close()

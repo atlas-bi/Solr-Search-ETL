@@ -1,4 +1,5 @@
 import itertools
+import re
 from datetime import datetime
 from types import SimpleNamespace
 from typing import Any, Dict, Generator, List, Optional, Tuple, Union
@@ -33,9 +34,9 @@ def connect() -> Tuple[Any, Any]:
     return cnxn, cnxn.cursor()
 
 
-def solr_load_batch(build_doc: Dict, batch: List) -> None:
+def solr_load_batch(build_doc: Dict, url: str, batch: List) -> None:
     """Process batch."""
-    solr = pysolr.Solr(settings.SOLR_URL, always_commit=True)
+    solr = pysolr.Solr(url, always_commit=True)
     solr.add(list(map(build_doc, batch)))
 
 
@@ -55,12 +56,25 @@ def rows(cursor: Any, columns: List[str], size: int = 500) -> Generator:
         yield [SimpleNamespace(**dict(zip(columns, row))) for row in fetched_rows]
 
 
+def clean_description(text: Optional[str]) -> Optional[str]:
+    """Remove bad characters from string."""
+    if text is None:
+        return text
+    return re.sub(r"<.*?>", "", text)
+
+
 def solr_date(date: Any) -> Optional[str]:
     """Convert datetime to solr date format."""
     if isinstance(date, datetime):
-        return datetime.strftime(
-            date.astimezone(pytz.utc),
-            "%Y-%m-%dT%H:%M:%SZ",
-        )
-
+        # this will still fail on invalid dates, like 9999-01-01
+        try:
+            return datetime.strftime(
+                date.astimezone(pytz.utc),
+                "%Y-%m-%dT%H:%M:%SZ",
+            )
+        except:
+            return datetime.strftime(
+                date,
+                "%Y-%m-%dT%H:%M:%SZ",
+            )
     return None

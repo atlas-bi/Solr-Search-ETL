@@ -6,3 +6,8 @@ import settings
 solr = pysolr.Solr(settings.SOLR_URL, always_commit=True)
 solr.delete(q="*:*")
 solr.optimize()
+
+
+solr = pysolr.Solr(settings.SOLR_LOOKUP_URL, always_commit=True)
+solr.delete(q="*:*")
+solr.optimize()

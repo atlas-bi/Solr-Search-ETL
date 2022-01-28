@@ -2,7 +2,15 @@ from functools import partial
 from types import SimpleNamespace
 from typing import Dict
 
-from functions import clean_doc, connect, rows, solr_date, solr_load_batch
+import settings
+from functions import (
+    clean_description,
+    clean_doc,
+    connect,
+    rows,
+    solr_date,
+    solr_load_batch,
+)
 
 
 def build_doc(initiative: SimpleNamespace) -> Dict:
@@ -16,7 +24,7 @@ def build_doc(initiative: SimpleNamespace) -> Dict:
         "orphan": "N",
         "runs": 10,
         "operations_owner": str(initiative.ops_owner),
-        "description": initiative.description,
+        "description": clean_description(initiative.description),
         "executive_owner": str(initiative.exec_owner),
         "financial_impact": str(initiative.financial_impact),
         "strategic_importance": str(initiative.strategic_importance),
@@ -28,17 +36,29 @@ def build_doc(initiative: SimpleNamespace) -> Dict:
             else []
         ),
         "linked_description": (
-            [x for x in initiative.collection_description.split("~|~") if x]
+            [
+                clean_description(x)
+                for x in initiative.collection_description.split("~|~")
+                if x
+            ]
             if initiative.collection_description
             else []
         )
         + (
-            [x for x in initiative.term_description.split("~|~") if x]
+            [
+                clean_description(x)
+                for x in initiative.term_description.split("~|~")
+                if x
+            ]
             if initiative.term_description
             else []
         )
         + (
-            [x for x in initiative.report_description.split("~|~") if x]
+            [
+                clean_description(x)
+                for x in initiative.report_description.split("~|~")
+                if x
+            ]
             if initiative.report_description
             else []
         ),
@@ -97,7 +117,7 @@ left outer join app.User_NameData updater on updater.UserId = i.LastUpdateUser
 
 columns = [column[0] for column in cursor.description]
 
-batch_loader = partial(solr_load_batch, build_doc)
+batch_loader = partial(solr_load_batch, build_doc, settings.SOLR_URL)
 list(map(batch_loader, rows(cursor, columns)))
 
 cnxn.close()

@@ -3,6 +3,7 @@ from functools import partial
 from types import SimpleNamespace
 from typing import Dict
 
+import settings
 from functions import clean_doc, connect, rows, solr_load_batch
 
 
@@ -45,7 +46,7 @@ from dbo.UserGroups g"""
 
 columns = [column[0] for column in cursor.description]
 
-batch_loader = partial(solr_load_batch, build_doc)
+batch_loader = partial(solr_load_batch, build_doc, settings.SOLR_URL)
 list(map(batch_loader, rows(cursor, columns)))
 
 cnxn.close()

@@ -2,7 +2,15 @@ from functools import partial
 from types import SimpleNamespace
 from typing import Dict
 
-from functions import clean_doc, connect, rows, solr_date, solr_load_batch
+import settings
+from functions import (
+    clean_description,
+    clean_doc,
+    connect,
+    rows,
+    solr_date,
+    solr_load_batch,
+)
 
 
 def build_doc(report: SimpleNamespace) -> Dict:
@@ -16,11 +24,11 @@ def build_doc(report: SimpleNamespace) -> Dict:
         "source_database": report.system_db,
         "name": report.name,
         "description": [
-            report.description,
-            report.detailed_description,
-            report.system_description,
-            report.docs_description,
-            report.docs_assumptions,
+            clean_description(report.description),
+            clean_description(report.detailed_description),
+            clean_description(report.system_description),
+            clean_description(report.docs_description),
+            clean_description(report.docs_assumptions),
         ],
         "certification": report.certification_tag,
         "report_type": report.report_type,
@@ -44,17 +52,25 @@ def build_doc(report: SimpleNamespace) -> Dict:
             [x for x in report.term_name.split("~|~") if x] if report.term_name else []
         ),
         "linked_description": (
-            [x for x in report.term_description.split("~|~") if x]
+            [clean_description(x) for x in report.term_description.split("~|~") if x]
             if report.term_description
             else []
         )
         + (
-            [x for x in report.collection_description.split("~|~") if x]
+            [
+                clean_description(x)
+                for x in report.collection_description.split("~|~")
+                if x
+            ]
             if report.collection_description
             else []
         )
         + (
-            [x for x in report.initiative_description.split("~|~") if x]
+            [
+                clean_description(x)
+                for x in report.initiative_description.split("~|~")
+                if x
+            ]
             if report.initiative_description
             else []
         ),
@@ -163,7 +179,7 @@ left outer join app.User_NameData as ops_owner on ops_owner.UserId = d.Operation
 
 columns = [column[0] for column in cursor.description]
 
-batch_loader = partial(solr_load_batch, build_doc)
+batch_loader = partial(solr_load_batch, build_doc, settings.SOLR_URL)
 list(map(batch_loader, rows(cursor, columns)))
 
 cnxn.close()
