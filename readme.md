@@ -10,6 +10,7 @@ In order to use these scripts you should already have Atlas published, with Solr
 
 ```py
 SOLR_URL = "http://localhost:8983/solr/atlas"
+SOLR_LOOKUP_URL = "http://localhost:8983/solr/atlas_lookups"
 SQL_CONN = "SERVER=server_name;DATABASE=atlas;UID=user_name;PWD=password"
 ```
 
