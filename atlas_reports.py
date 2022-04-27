@@ -118,8 +118,8 @@ cursor.execute(
 , tag.CertName as certification_tag
 , isnull(report_type.ShortName, report_type.name) as report_type
 , r.reportobjecttypeid as report_type_id
-, author.Fullname as created_by
-, updater.Fullname as modified_by
+, author.Fullname_calc as created_by
+, updater.Fullname_calc as modified_by
 , r.LastModifiedDate as modified_at
 , r.EpicMasterFile as system_identifier
 , r.EpicRecordID as system_id
@@ -128,15 +128,15 @@ cursor.execute(
 , r.EpicReportTemplateId as system_template_id
 , r.LastLoadDate as etl_date
 , r.ReportObjectUrl as run_url
-, STUFF((select '~|~' +  q.Query from dbo.ReportObjectQuery q where q.ReportObjectId = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') query 
-, STUFF((select '~|~' +  f.FragilityTagName from app.ReportObjectDocFragilityTags t inner join app.FragilityTag f on t.FragilityTagID = f.FragilityTagID where t.ReportObjectId = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') tag 
+, STUFF((select '~|~' +  q.Query from dbo.ReportObjectQuery q where q.ReportObjectId = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') query
+, STUFF((select '~|~' +  f.FragilityTagName from app.ReportObjectDocFragilityTags t inner join app.FragilityTag f on t.FragilityTagID = f.FragilityTagID where t.ReportObjectId = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') tag
 
 
 , case when isnull(cast(d.ReportObjectID as nvarchar),'N') = 'N' then 'N' else 'Y' end as documented
 , d.DoNotPurge as do_not_purge
 , d.EnabledForHyperspace  as enabled_for_hyperspace
-, doc_updater.Fullname as updated_by
-, doc_creator.Fullname as created_by
+, doc_updater.Fullname_calc as updated_by
+, doc_creator.Fullname_calc as created_by
 , d.LastUpdateDateTime as last_updated
 , ms.MaintenanceScheduleName as maintenance_schedule
 , isnull(d.ExecutiveVisibilityYN, 'N') as executive_visibility
@@ -144,19 +144,19 @@ cursor.execute(
 , rf.EstimatedRunFrequencyName as estimated_run_frequency
 , ov.OrganizationalValueName as organizational_value
 , d.CreatedDateTime as created
-, requester.Fullname as requester
-, ops_owner.Fullname as ops_owner
+, requester.Fullname_calc as requester
+, ops_owner.Fullname_calc as ops_owner
 , d.DeveloperDescription as docs_description
 , d.KeyAssumptions as docs_assumptions
 
-, STUFF((select '~|~' +  t.name from app.ReportObjectDocTerms dt inner join app.Term t on dt.TermId = t.termid where dt.reportobjectid = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') term_name 
+, STUFF((select '~|~' +  t.name from app.ReportObjectDocTerms dt inner join app.Term t on dt.TermId = t.termid where dt.reportobjectid = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') term_name
 , STUFF((select '~|~' +  t.Summary + '~|~' + t.TechnicalDefinition from app.ReportObjectDocTerms dt inner join app.Term t on dt.TermId = t.termid where dt.reportobjectid = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') term_description
 
-, STUFF((select '~|~' +  p.name from app.DP_ReportAnnotation a inner join app.DP_DataProject p on a.DataProjectId = p.DataProjectID where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_name 
-, STUFF((select '~|~' +  p.Description + '~|~' + p.Purpose from app.DP_ReportAnnotation a inner join app.DP_DataProject p on a.DataProjectId = p.DataProjectID where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_description
+, STUFF((select '~|~' +  p.name from app.CollectionReport a inner join app.Collection p on a.DataProjectId = p.DataProjectID where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_name
+, STUFF((select '~|~' +  p.Description + '~|~' + p.Purpose from app.CollectionReport a inner join app.Collection p on a.DataProjectId = p.DataProjectID where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_description
 
-, STUFF((select '~|~' +  i.name from app.DP_ReportAnnotation a inner join app.DP_DataProject p on a.DataProjectId = p.DataProjectID inner join app.DP_DataInitiative i on i.DataInitiativeID=p.DataInitiativeID where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_name 
-, STUFF((select '~|~' +  i.Description + '~|~' + p.Purpose from app.DP_ReportAnnotation a inner join app.DP_DataProject p on a.DataProjectId = p.DataProjectID inner join app.DP_DataInitiative i on i.DataInitiativeID=p.DataInitiativeID where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_description
+, STUFF((select '~|~' +  i.name from app.CollectionReport a inner join app.Collection p on a.DataProjectId = p.DataProjectID inner join app.Initiative i on i.DataInitiativeID=p.DataInitiativeID where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_name
+, STUFF((select '~|~' +  i.Description + '~|~' + p.Purpose from app.CollectionReport a inner join app.Collection p on a.DataProjectId = p.DataProjectID inner join app.Initiative i on i.DataInitiativeID=p.DataInitiativeID where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_description
 
 
 
@@ -164,16 +164,16 @@ from dbo.ReportObject r
 left outer join dbo.ReportCertificationTags tag on r.CertificationTagID = tag.Cert_ID
 left outer join app.ReportObject_doc d on r.ReportObjectID = d.ReportObjectID
 left outer join dbo.ReportObjectType report_type on r.ReportObjectTypeID = report_type.ReportObjectTypeID
-left outer join app.User_NameData as author on r.AuthorUserID = author.UserId
-left outer join app.User_NameData as updater on r.LastModifiedByUserID = updater.UserId
-left outer join app.User_NameData as doc_updater on d.UpdatedBy = doc_updater.UserId
-left outer join app.User_NameData as doc_creator on d.UpdatedBy = doc_creator.UserId
+left outer join dbo.[User] as author on r.AuthorUserID = author.UserId
+left outer join dbo.[User] as updater on r.LastModifiedByUserID = updater.UserId
+left outer join dbo.[User] as doc_updater on d.UpdatedBy = doc_updater.UserId
+left outer join dbo.[User] as doc_creator on d.UpdatedBy = doc_creator.UserId
 left outer join app.MaintenanceSchedule ms on ms.MaintenanceScheduleID = d.MaintenanceScheduleID
 left outer join app.Fragility fr on fr.FragilityID = d.FragilityID
 left outer join app.EstimatedRunFrequency rf on rf.EstimatedRunFrequencyID = d.EstimatedRunFrequencyID
 left outer join app.OrganizationalValue ov on ov.OrganizationalValueID = d.OrganizationalValueID
-left outer join app.User_NameData as requester on requester.UserId = d.Requester
-left outer join app.User_NameData as ops_owner on ops_owner.UserId = d.OperationalOwnerUserID
+left outer join dbo.[User] as requester on requester.UserId = d.Requester
+left outer join dbo.[User] as ops_owner on ops_owner.UserId = d.OperationalOwnerUserID
 """
 )
 

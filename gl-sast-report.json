@@ -1,0 +1,1 @@
+{"version":"14.0.4","vulnerabilities":[],"scan":{"scanner":{"id":"bandit","name":"Bandit","url":"https://github.com/PyCQA/bandit","vendor":{"name":"GitLab"},"version":"1.7.4"},"type":"sast","start_time":"2022-04-27T13:45:02","end_time":"2022-04-27T13:45:02","status":"success"}}

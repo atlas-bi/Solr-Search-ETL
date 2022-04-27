@@ -51,15 +51,6 @@ from app.FragilityTag
 union all
 
 select
-concat('initiative_contacts_', cast(ContactID as nvarchar)) as id,
-'initiative_contacts' as item_type,
-Name as 'item_name',
-ContactID as 'atlas_id'
-from app.DP_Contact
-
-union all
-
-select
 concat('maintenance_log_status_', cast(MaintenanceLogStatusID as nvarchar)) as id,
 'maintenance_log_status' as item_type,
 MaintenanceLogStatusName as 'item_name',

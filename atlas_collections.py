@@ -90,25 +90,25 @@ cursor.execute(
 , p.Purpose as search_summary
 , p.Description as description
 , p.LastUpdateDate as modified_at
-, updater.Fullname as modified_by
+, updater.Fullname_calc as modified_by
 , case when isnull((select Value from app.GlobalSiteSettings where Name = 'collections_search_visibility'),'N') = 'N' or Hidden='Y' then 'N' else 'Y' end as visible
 
-, STUFF((select '~|~' +  i.name from app.DP_DataInitiative i where i.DataInitiativeID=p.datainitiativeid  FOR XML PATH('')), 1, 3, '') initiative_name 
-, STUFF((select '~|~' +  i.description from app.DP_DataInitiative i where i.DataInitiativeID=p.datainitiativeid FOR XML PATH('')), 1, 3, '') initiative_description
+, STUFF((select '~|~' +  i.name from app.Initiative i where i.DataInitiativeID=p.datainitiativeid  FOR XML PATH('')), 1, 3, '') initiative_name
+, STUFF((select '~|~' +  i.description from app.Initiative i where i.DataInitiativeID=p.datainitiativeid FOR XML PATH('')), 1, 3, '') initiative_description
 
 
-, STUFF((select '~|~' +  t.name from app.DP_TermAnnotation a inner join app.term t on a.TermId = t.termid where a.DataProjectId=p.DataProjectID  FOR XML PATH('')), 1, 3, '') term_name 
-, STUFF((select '~|~' +  t.Summary + '~|~' + t.TechnicalDefinition from app.DP_TermAnnotation a inner join app.term t on a.termid = t.termid where a.DataProjectId=p.DataProjectID FOR XML PATH('')), 1, 3, '')term_description
+, STUFF((select '~|~' +  t.name from app.CollectionTerm a inner join app.term t on a.TermId = t.termid where a.DataProjectId=p.DataProjectID  FOR XML PATH('')), 1, 3, '') term_name
+, STUFF((select '~|~' +  t.Summary + '~|~' + t.TechnicalDefinition from app.CollectionTerm a inner join app.term t on a.termid = t.termid where a.DataProjectId=p.DataProjectID FOR XML PATH('')), 1, 3, '')term_description
 
 
 
-, STUFF((select '~|~' +  r.name from app.DP_ReportAnnotation a inner join dbo.ReportObject r on a.ReportId = r.ReportObjectID left outer join app.reportobject_doc d on r.reportobjectid = d.reportobjectid  where a.DataProjectId=p.DataProjectID and isnull(d.Hidden,'N') = 'N' FOR XML PATH('')), 1, 3, '') report_name 
-, STUFF((select '~|~' +  r.DisplayTitle from app.DP_ReportAnnotation a inner join dbo.ReportObject r on a.ReportId = r.ReportObjectID left outer join app.reportobject_doc d on r.reportobjectid = d.reportobjectid where a.DataProjectId=p.DataProjectID and r.DisplayTitle <> NULL and isnull(d.Hidden,'N') = 'N' FOR XML PATH('')), 1, 3, '') linked_name 
-, STUFF((select '~|~' +  r.Description + '~|~' + r.DetailedDescription + '~|~' + r.RepositoryDescription + '~|~' + d.DeveloperDescription + '~|~' + d.KeyAssumptions from app.DP_ReportAnnotation a inner join dbo.ReportObject r on a.ReportId = r.ReportObjectID left outer join app.ReportObject_doc d on r.ReportObjectID = d.ReportObjectID where a.DataProjectId=p.DataProjectID and isnull(d.Hidden,'N') = 'N' FOR XML PATH('')), 1, 3, '') linked_description 
+, STUFF((select '~|~' +  r.name from app.CollectionReport a inner join dbo.ReportObject r on a.ReportId = r.ReportObjectID left outer join app.reportobject_doc d on r.reportobjectid = d.reportobjectid  where a.DataProjectId=p.DataProjectID and isnull(d.Hidden,'N') = 'N' FOR XML PATH('')), 1, 3, '') report_name
+, STUFF((select '~|~' +  r.DisplayTitle from app.CollectionReport a inner join dbo.ReportObject r on a.ReportId = r.ReportObjectID left outer join app.reportobject_doc d on r.reportobjectid = d.reportobjectid where a.DataProjectId=p.DataProjectID and r.DisplayTitle <> NULL and isnull(d.Hidden,'N') = 'N' FOR XML PATH('')), 1, 3, '') linked_name
+, STUFF((select '~|~' +  r.Description + '~|~' + r.DetailedDescription + '~|~' + r.RepositoryDescription + '~|~' + d.DeveloperDescription + '~|~' + d.KeyAssumptions from app.CollectionReport a inner join dbo.ReportObject r on a.ReportId = r.ReportObjectID left outer join app.ReportObject_doc d on r.ReportObjectID = d.ReportObjectID where a.DataProjectId=p.DataProjectID and isnull(d.Hidden,'N') = 'N' FOR XML PATH('')), 1, 3, '') linked_description
 
 
-from app.DP_DataProject p
-left outer join app.User_NameData updater on p.LastUpdateUser = updater.UserId
+from app.Collection p
+left outer join dbo.[User] updater on p.LastUpdateUser = updater.UserId
 """
 )
 

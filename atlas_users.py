@@ -35,7 +35,7 @@ cnxn, cursor = connect()
 
 cursor.execute(
     """select u.userid as user_id
-, isnull(d.fullname, u.accountname) as name
+, isnull(fullname_calc, u.accountname) as name
 , employeeid as employee_id
 , email as email
 , epicid as system_id
@@ -45,7 +45,6 @@ cursor.execute(
 , stuff((select '|' + g.GroupName from dbo.UserGroups g inner join dbo.UserGroupsMembership m on g.GroupId = m.GroupId where m.UserId = u.userid FOR XML PATH('')), 1, 1, '') groups
 
 from dbo.[user] u
-left outer join app.user_namedata d on u.userid = d.userid
 """
 )
 

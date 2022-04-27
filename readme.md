@@ -16,3 +16,7 @@ SQL_CONN = "SERVER=server_name;DATABASE=atlas;UID=user_name;PWD=password"
 
 2. `delete.py` script should be run once daily to empty Solr.
 3. The remaining `atlas_*.py` scripts can be run periodically through the day to keep search results current.
+
+## Contributing
+
+This repository uses pre-commit and commitzen. Please commit `npm run commit && git push`.
