@@ -1,8 +1,15 @@
+"""Atlas Solr ETL for Collections."""
+import os
 from functools import partial
 from types import SimpleNamespace
 from typing import Dict
 
-import settings
+from dotenv import load_dotenv
+
+load_dotenv()
+
+SOLRURL = os.environ.get("SOLRURL", "https://solr.example.com/solr/atlas")
+
 from functions import (
     clean_description,
     clean_doc,
@@ -114,7 +121,7 @@ left outer join dbo.[User] updater on p.LastUpdateUser = updater.UserId
 
 columns = [column[0] for column in cursor.description]
 
-batch_loader = partial(solr_load_batch, build_doc, settings.SOLR_URL)
+batch_loader = partial(solr_load_batch, build_doc, SOLRURL)
 list(map(batch_loader, rows(cursor, columns)))
 
 cnxn.close()

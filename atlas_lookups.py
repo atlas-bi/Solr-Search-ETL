@@ -1,9 +1,17 @@
 """Load atlas lookups to solr search."""
+import os
 from functools import partial
 from types import SimpleNamespace
 from typing import Dict
 
-import settings
+from dotenv import load_dotenv
+
+load_dotenv()
+
+SOLRLOOKUPURL = os.environ.get(
+    "SOLRLOOKUPURL", "https://solr.example.com/solr/atlas_lookups"
+)
+
 from functions import clean_doc, connect, rows, solr_load_batch
 
 
@@ -106,7 +114,7 @@ from app.UserRoles
 
 columns = [column[0] for column in cursor.description]
 
-batch_loader = partial(solr_load_batch, build_doc, settings.SOLR_LOOKUP_URL)
+batch_loader = partial(solr_load_batch, build_doc, SOLRLOOKUPURL)
 list(map(batch_loader, rows(cursor, columns)))
 
 cnxn.close()

@@ -10,9 +10,32 @@ python = "^3.6"
 pyodbc = "^4.0.32"
 pysolr = "^3.9.0"
 pytz = "^2022.1"
+python-dotenv = "^0.20.0"
 
 [tool.poetry.dev-dependencies]
+tox = "^3.25.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+max_line_length = 99
+exclude = '''
+    /(
+        \.git
+      | \.tox
+      | \.venv
+
+      # The following are specific to Black, you probably don't want those.
+      | blib2to3
+      | tests/data
+      | node_modules
+    )/
+    '''
+
+[tool.isort]
+profile = "black"
+
+[tool.pylint.messages_control]
+disable = "C0103"

@@ -1,4 +1,6 @@
+"""Atlas Solr ETL shared functions."""
 import itertools
+import os
 import re
 from datetime import datetime
 from types import SimpleNamespace
@@ -7,7 +9,13 @@ from typing import Any, Dict, Generator, List, Optional, Tuple, Union
 import pyodbc
 import pysolr
 import pytz
-import settings
+from dotenv import load_dotenv
+
+load_dotenv()
+ATLASDATABASE = os.environ.get(
+    "ATLASDATABASE",
+    "DRIVER={ODBC Driver 18 for SQL Server};SERVER=atlas_server;DATABASE=atlas;UID=mr_cool;PWD=12345;TrustServerCertificate=Yes;",
+)
 
 
 def clean_doc(doc: Dict) -> Dict:
@@ -28,7 +36,7 @@ def clean_doc(doc: Dict) -> Dict:
 def connect() -> Tuple[Any, Any]:
     """Create sql connection."""
     cnxn = pyodbc.connect(
-        f"DRIVER={{ODBC Driver 17 for SQL Server}};{settings.SQL_CONN}",
+        ATLASDATABASE,
         timeout=4,
     )
     return cnxn, cnxn.cursor()
@@ -51,7 +59,7 @@ def rows(cursor: Any, columns: List[str], size: int = 500) -> Generator:
 
         start = size * iteration
         end = size * iteration + len(fetched_rows)
-        print(f"records {start}-{end}")  # noqa: T001
+        print(f"records {start}-{end}")  # noqa: T201
 
         yield [SimpleNamespace(**dict(zip(columns, row))) for row in fetched_rows]
 
@@ -72,7 +80,8 @@ def solr_date(date: Any) -> Optional[str]:
                 date.astimezone(pytz.utc),
                 "%Y-%m-%dT%H:%M:%SZ",
             )
-        except:
+
+        except:  # noqa: B001,E722
             return datetime.strftime(
                 date,
                 "%Y-%m-%dT%H:%M:%SZ",

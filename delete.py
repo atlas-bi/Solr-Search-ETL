@@ -1,13 +1,21 @@
 """Delete script is run once daily to clean out any removed data."""
+import os
 
 import pysolr
-import settings
+from dotenv import load_dotenv
 
-solr = pysolr.Solr(settings.SOLR_URL, always_commit=True)
+load_dotenv()
+
+SOLRURL = os.environ.get("SOLRURL", "https://solr.example.com/solr/atlas")
+SOLRLOOKUPURL = os.environ.get(
+    "SOLRLOOKUPURL", "https://solr.example.com/solr/atlas_lookups"
+)
+
+solr = pysolr.Solr(SOLRURL, always_commit=True)
 solr.delete(q="*:*")
 solr.optimize()
 
 
-solr = pysolr.Solr(settings.SOLR_LOOKUP_URL, always_commit=True)
+solr = pysolr.Solr(SOLRLOOKUPURL, always_commit=True)
 solr.delete(q="*:*")
 solr.optimize()
