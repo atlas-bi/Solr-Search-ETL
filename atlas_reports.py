@@ -37,7 +37,11 @@ def build_doc(report: SimpleNamespace) -> Dict:
             clean_description(report.docs_description),
             clean_description(report.docs_assumptions),
         ],
-        "certification": report.certification_tag,
+        "certification": (
+            [x for x in report.certification_tag.split("~|~") if x]
+            if report.certification_tag
+            else []
+        ),
         "report_type": report.report_type,
         "report_type_id": report.report_type_id,
         "author": str(report.created_by),
@@ -112,6 +116,13 @@ def build_doc(report: SimpleNamespace) -> Dict:
 
 cnxn, cursor = connect()
 
+cursor.execute("drop table if exists #report_temp")
+cursor.execute("drop table if exists #user_temp")
+
+cursor.execute("select * into #report_temp from ReportObject;")
+cursor.execute("select * into #user_temp from [User];")
+
+
 cursor.execute(
     """select --top 100
   r.ReportObjectID as report_id
@@ -122,7 +133,7 @@ cursor.execute(
 , r.description as description
 , r.DetailedDescription as detailed_description
 , r.RepositoryDescription as system_description
-, tag.CertName as certification_tag
+, STUFF((select '~|~' +  t.name from app.ReportTagLinks l inner join app.Tags t on l.tagid = t.tagid where l.reportid = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') as certification_tag
 , isnull(report_type.ShortName, report_type.name) as report_type
 , r.reportobjecttypeid as report_type_id
 , author.Fullname_calc as created_by
@@ -167,20 +178,20 @@ cursor.execute(
 
 
 
-from dbo.ReportObject r
-left outer join dbo.ReportCertificationTags tag on r.CertificationTagID = tag.Cert_ID
+from #report_temp r
 left outer join app.ReportObject_doc d on r.ReportObjectID = d.ReportObjectID
 left outer join dbo.ReportObjectType report_type on r.ReportObjectTypeID = report_type.ReportObjectTypeID
-left outer join dbo.[User] as author on r.AuthorUserID = author.UserId
-left outer join dbo.[User] as updater on r.LastModifiedByUserID = updater.UserId
-left outer join dbo.[User] as doc_updater on d.UpdatedBy = doc_updater.UserId
-left outer join dbo.[User] as doc_creator on d.UpdatedBy = doc_creator.UserId
+left outer join #user_temp as author on r.AuthorUserID = author.UserId
+left outer join #user_temp as updater on r.LastModifiedByUserID = updater.UserId
+left outer join #user_temp as doc_updater on d.UpdatedBy = doc_updater.UserId
+left outer join #user_temp as doc_creator on d.UpdatedBy = doc_creator.UserId
 left outer join app.MaintenanceSchedule ms on ms.MaintenanceScheduleID = d.MaintenanceScheduleID
 left outer join app.Fragility fr on fr.FragilityID = d.FragilityID
 left outer join app.EstimatedRunFrequency rf on rf.EstimatedRunFrequencyID = d.EstimatedRunFrequencyID
 left outer join app.OrganizationalValue ov on ov.OrganizationalValueID = d.OrganizationalValueID
-left outer join dbo.[User] as requester on requester.UserId = d.Requester
-left outer join dbo.[User] as ops_owner on ops_owner.UserId = d.OperationalOwnerUserID
+left outer join #user_temp as requester on requester.UserId = d.Requester
+left outer join #user_temp as ops_owner on ops_owner.UserId = d.OperationalOwnerUserID
+
 """
 )
 
@@ -188,5 +199,8 @@ columns = [column[0] for column in cursor.description]
 
 batch_loader = partial(solr_load_batch, build_doc, SOLRURL)
 list(map(batch_loader, rows(cursor, columns)))
+
+cursor.execute("drop table if exists #report_temp")
+cursor.execute("drop table if exists #user_temp")
 
 cnxn.close()
