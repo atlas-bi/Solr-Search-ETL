@@ -102,7 +102,7 @@ cursor.execute(
 , s.name as strategic_importance
 , i.LastUpdateDate as modified_at
 , updater.Fullname_calc as modified_by
-, case when isnull((select Value from app.GlobalSiteSettings where Name = 'initiatives_search_visibility'),'N') = 'N' or Hidden='Y' then 'N' else 'Y' end as visible
+, case when isnull((select Value from app.GlobalSiteSettings where Name = 'initiatives_search_visibility'),'N') = 'N' or i.Hidden='Y' then 'N' else 'Y' end as visible
 , STUFF((select '~|~' +  p.name from app.Collection p where i.DataInitiativeID=p.datainitiativeid and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_name
 , STUFF((select '~|~' +  p.Purpose + '~|~' + p.description from app.Collection p where i.DataInitiativeID=p.datainitiativeid and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_description
 
