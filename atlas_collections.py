@@ -100,8 +100,8 @@ cursor.execute(
 , updater.Fullname_calc as modified_by
 , case when isnull((select Value from app.GlobalSiteSettings where Name = 'collections_search_visibility'),'N') = 'N' or Hidden='Y' then 'N' else 'Y' end as visible
 
-, STUFF((select '~|~' +  i.name from app.Initiative i where i.DataInitiativeID=p.datainitiativeid  FOR XML PATH('')), 1, 3, '') initiative_name
-, STUFF((select '~|~' +  i.description from app.Initiative i where i.DataInitiativeID=p.datainitiativeid FOR XML PATH('')), 1, 3, '') initiative_description
+, STUFF((select '~|~' +  i.name from app.Initiative i where i.DataInitiativeID=p.datainitiativeid and isnull(i.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_name
+, STUFF((select '~|~' +  i.description from app.Initiative i where i.DataInitiativeID=p.datainitiativeid and isnull(i.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_description
 
 
 , STUFF((select '~|~' +  t.name from app.CollectionTerm a inner join app.term t on a.TermId = t.termid where a.DataProjectId=p.DataProjectID  FOR XML PATH('')), 1, 3, '') term_name
