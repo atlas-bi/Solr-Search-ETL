@@ -173,8 +173,8 @@ cursor.execute(
 , STUFF((select '~|~' +  p.name from app.CollectionReport a inner join app.Collection p on a.DataProjectId = p.DataProjectID where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_name
 , STUFF((select '~|~' +  p.Description + '~|~' + p.Purpose from app.CollectionReport a inner join app.Collection p on a.DataProjectId = p.DataProjectID where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_description
 
-, STUFF((select '~|~' +  i.name from app.CollectionReport a inner join app.Collection p on a.DataProjectId = p.DataProjectID inner join app.Initiative i on i.DataInitiativeID=p.DataInitiativeID where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_name
-, STUFF((select '~|~' +  i.Description + '~|~' + p.Purpose from app.CollectionReport a inner join app.Collection p on a.DataProjectId = p.DataProjectID inner join app.Initiative i on i.DataInitiativeID=p.DataInitiativeID where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_description
+, STUFF((select '~|~' +  i.name from app.CollectionReport a inner join app.Collection p on a.DataProjectId = p.DataProjectID inner join app.Initiative i on i.DataInitiativeID=p.DataInitiativeID where a.ReportId = r.ReportObjectID and isnull(p.Hidden,'N')='N' and isnull(i.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_name
+, STUFF((select '~|~' +  i.Description + '~|~' + p.Purpose from app.CollectionReport a inner join app.Collection p on a.DataProjectId = p.DataProjectID inner join app.Initiative i on i.DataInitiativeID=p.DataInitiativeID where a.ReportId = r.ReportObjectID and isnull(p.Hidden,'N')='N' and isnull(i.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_description
 
 
 
