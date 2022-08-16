@@ -107,11 +107,11 @@ select
 , t.LastUpdatedDateTime as modified_at
 , updater.Fullname_calc as modified_by
 , case when isnull((select Value from app.GlobalSiteSettings where Name = 'terms_search_visibility'),'N') = 'N' then 'N' else 'Y' end as visible
-, STUFF((select '~|~' +  p.name from app.CollectionTerm a inner join app.Collection p on a.DataProjectId=p.DataProjectID where a.TermId=t.TermId and isnull(p.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_name
-, STUFF((select '~|~' +  p.description from app.CollectionTerm a inner join app.Collection p on a.DataProjectId=p.DataProjectID where a.TermId=t.TermId and isnull(p.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_description
+, STUFF((select '~|~' +  p.name from app.CollectionTerm a inner join app.Collection p on a.collectionid=p.collectionid where a.TermId=t.TermId and isnull(p.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_name
+, STUFF((select '~|~' +  p.description from app.CollectionTerm a inner join app.Collection p on a.collectionid=p.collectionid where a.TermId=t.TermId and isnull(p.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_description
 
-, STUFF((select '~|~' +  i.name from app.CollectionTerm a inner join app.Collection p on a.DataProjectId=p.DataProjectID inner join app.Initiative i on i.DataInitiativeID=p.datainitiativeid where a.TermId=t.TermId and isnull(p.Hidden,'N')='N' and isnull(i.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_name
-, STUFF((select '~|~' +  i.description from app.CollectionTerm a inner join app.Collection p on a.DataProjectId=p.DataProjectID inner join app.Initiative i on i.DataInitiativeID=p.datainitiativeid where a.TermId=t.TermId and isnull(p.Hidden,'N')='N' and isnull(i.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_description
+, STUFF((select '~|~' +  i.name from app.CollectionTerm a inner join app.Collection p on a.collectionid=p.collectionid inner join app.Initiative i on i.InitiativeID=p.initiativeid where a.TermId=t.TermId and isnull(p.Hidden,'N')='N' and isnull(i.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_name
+, STUFF((select '~|~' +  i.description from app.CollectionTerm a inner join app.Collection p on a.collectionid=p.collectionid inner join app.Initiative i on i.InitiativeID=p.initiativeid where a.TermId=t.TermId and isnull(p.Hidden,'N')='N' and isnull(i.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_description
 
 , STUFF((select '~|~' +  r.name from app.ReportObjectDocTerms a inner join dbo.ReportObject r on a.ReportObjectID=r.ReportObjectID left outer join app.reportobject_doc d on d.reportobjectid = r.reportobjectid where a.TermId=t.TermId and isnull(d.hidden,'N')='N' FOR XML PATH('')), 1, 3, '') report_name
 , STUFF((select '~|~' +  r.DisplayTitle from app.ReportObjectDocTerms a inner join dbo.ReportObject r on a.ReportObjectID=r.ReportObjectID left outer join app.reportobject_doc d on d.reportobjectid = r.reportobjectid where a.TermId=t.TermId and r.DisplayTitle is not null and isnull(d.hidden,'N')='N' FOR XML PATH('')), 1, 3, '') linked_name

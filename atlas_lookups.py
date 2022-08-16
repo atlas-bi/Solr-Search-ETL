@@ -32,73 +32,73 @@ cnxn, cursor = connect()
 cursor.execute(
     """
 select
-concat('financial_impact_', cast(FinancialImpactId as nvarchar)) as id,
+concat('financial_impact_', cast(id as nvarchar)) as id,
 'financial_impact' as item_type,
 Name as 'item_name',
-FinancialImpactId as 'atlas_id'
+id as 'atlas_id'
 from app.FinancialImpact
 
 union all
 
 select
-concat('fragility_', cast(FragilityID as nvarchar)) as id,
+concat('fragility_', cast(id as nvarchar)) as id,
 'fragility' as item_type,
-FragilityName as 'item_name',
-FragilityID as 'atlas_id'
+name as 'item_name',
+id as 'atlas_id'
 from app.Fragility
 
 union all
 
 select
-concat('fragility_tag_', cast(FragilityTagID as nvarchar)) as id,
+concat('fragility_tag_', cast(id as nvarchar)) as id,
 'fragility_tag' as item_type,
-FragilityTagName as 'item_name',
-FragilityTagID as 'atlas_id'
+name as 'item_name',
+id as 'atlas_id'
 from app.FragilityTag
 
 union all
 
 select
-concat('maintenance_log_status_', cast(MaintenanceLogStatusID as nvarchar)) as id,
+concat('maintenance_log_status_', cast(id as nvarchar)) as id,
 'maintenance_log_status' as item_type,
-MaintenanceLogStatusName as 'item_name',
-MaintenanceLogStatusID as 'atlas_id'
+name as 'item_name',
+id as 'atlas_id'
 from app.MaintenanceLogStatus
 
 union all
 
 select
-concat('maintenance_schedule_', cast(MaintenanceScheduleID as nvarchar)) as id,
+concat('maintenance_schedule_', cast(id as nvarchar)) as id,
 'maintenance_schedule' as item_type,
-MaintenanceScheduleName as 'item_name',
-MaintenanceScheduleID as 'atlas_id'
+name as 'item_name',
+id as 'atlas_id'
 from app.MaintenanceSchedule
 
 union all
 
 select
-concat('organizational_value_', cast(OrganizationalValueId as nvarchar)) as id,
+concat('organizational_value_', cast(id as nvarchar)) as id,
 'organizational_value' as item_type,
-OrganizationalValueName as 'item_name',
-OrganizationalValueId as 'atlas_id'
+name as 'item_name',
+id as 'atlas_id'
 from app.OrganizationalValue
 
 union all
 
 select
-concat('run_frequency_', cast(EstimatedRunFrequencyId as nvarchar)) as id,
+concat('run_frequency_', cast(id as nvarchar)) as id,
 'run_frequency' as item_type,
-EstimatedRunFrequencyName as 'item_name',
-EstimatedRunFrequencyId as 'atlas_id'
+name as 'item_name',
+id as 'atlas_id'
 from app.EstimatedRunFrequency
 
 union all
 
 select
-concat('strategic_importance_', cast(StrategicImportanceId as nvarchar)) as id,
+concat('strategic_importance_', cast(id as nvarchar)) as id,
 'strategic_importance' as item_type,
 Name as 'item_name',
-StrategicImportanceId as 'atlas_id'
+id as 'atlas_id'
 from app.StrategicImportance
 
 union all
