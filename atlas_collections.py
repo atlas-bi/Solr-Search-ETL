@@ -92,7 +92,7 @@ cnxn, cursor = connect()
 
 cursor.execute(
     """select
-  p.DataProjectID as collection_id
+  p.collectionid as collection_id
 , p.name as name
 , p.Purpose as search_summary
 , p.Description as description
@@ -100,18 +100,18 @@ cursor.execute(
 , updater.Fullname_calc as modified_by
 , case when isnull((select Value from app.GlobalSiteSettings where Name = 'collections_search_visibility'),'N') = 'N' or Hidden='Y' then 'N' else 'Y' end as visible
 
-, STUFF((select '~|~' +  i.name from app.Initiative i where i.DataInitiativeID=p.datainitiativeid and isnull(i.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_name
-, STUFF((select '~|~' +  i.description from app.Initiative i where i.DataInitiativeID=p.datainitiativeid and isnull(i.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_description
+, STUFF((select '~|~' +  i.name from app.Initiative i where i.InitiativeID=p.initiativeid and isnull(i.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_name
+, STUFF((select '~|~' +  i.description from app.Initiative i where i.InitiativeID=p.initiativeid and isnull(i.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_description
 
 
-, STUFF((select '~|~' +  t.name from app.CollectionTerm a inner join app.term t on a.TermId = t.termid where a.DataProjectId=p.DataProjectID  FOR XML PATH('')), 1, 3, '') term_name
-, STUFF((select '~|~' +  t.Summary + '~|~' + t.TechnicalDefinition from app.CollectionTerm a inner join app.term t on a.termid = t.termid where a.DataProjectId=p.DataProjectID FOR XML PATH('')), 1, 3, '')term_description
+, STUFF((select '~|~' +  t.name from app.CollectionTerm a inner join app.term t on a.TermId = t.termid where a.collectionid=p.collectionid  FOR XML PATH('')), 1, 3, '') term_name
+, STUFF((select '~|~' +  t.Summary + '~|~' + t.TechnicalDefinition from app.CollectionTerm a inner join app.term t on a.termid = t.termid where a.collectionid=p.collectionid FOR XML PATH('')), 1, 3, '')term_description
 
 
 
-, STUFF((select '~|~' +  r.name from app.CollectionReport a inner join dbo.ReportObject r on a.ReportId = r.ReportObjectID left outer join app.reportobject_doc d on r.reportobjectid = d.reportobjectid  where a.DataProjectId=p.DataProjectID and isnull(d.Hidden,'N') = 'N' FOR XML PATH('')), 1, 3, '') report_name
-, STUFF((select '~|~' +  r.DisplayTitle from app.CollectionReport a inner join dbo.ReportObject r on a.ReportId = r.ReportObjectID left outer join app.reportobject_doc d on r.reportobjectid = d.reportobjectid where a.DataProjectId=p.DataProjectID and r.DisplayTitle <> NULL and isnull(d.Hidden,'N') = 'N' FOR XML PATH('')), 1, 3, '') linked_name
-, STUFF((select '~|~' +  r.Description + '~|~' + r.DetailedDescription + '~|~' + r.RepositoryDescription + '~|~' + d.DeveloperDescription + '~|~' + d.KeyAssumptions from app.CollectionReport a inner join dbo.ReportObject r on a.ReportId = r.ReportObjectID left outer join app.ReportObject_doc d on r.ReportObjectID = d.ReportObjectID where a.DataProjectId=p.DataProjectID and isnull(d.Hidden,'N') = 'N' FOR XML PATH('')), 1, 3, '') linked_description
+, STUFF((select '~|~' +  r.name from app.CollectionReport a inner join dbo.ReportObject r on a.ReportId = r.ReportObjectID left outer join app.reportobject_doc d on r.reportobjectid = d.reportobjectid  where a.collectionid=p.collectionid and isnull(d.Hidden,'N') = 'N' FOR XML PATH('')), 1, 3, '') report_name
+, STUFF((select '~|~' +  r.DisplayTitle from app.CollectionReport a inner join dbo.ReportObject r on a.ReportId = r.ReportObjectID left outer join app.reportobject_doc d on r.reportobjectid = d.reportobjectid where a.collectionid=p.collectionid and r.DisplayTitle <> NULL and isnull(d.Hidden,'N') = 'N' FOR XML PATH('')), 1, 3, '') linked_name
+, STUFF((select '~|~' +  r.Description + '~|~' + r.DetailedDescription + '~|~' + r.RepositoryDescription + '~|~' + d.DeveloperDescription + '~|~' + d.KeyAssumptions from app.CollectionReport a inner join dbo.ReportObject r on a.ReportId = r.ReportObjectID left outer join app.ReportObject_doc d on r.ReportObjectID = d.ReportObjectID where a.collectionid=p.collectionid and isnull(d.Hidden,'N') = 'N' FOR XML PATH('')), 1, 3, '') linked_description
 
 
 from app.Collection p

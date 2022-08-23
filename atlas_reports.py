@@ -133,7 +133,7 @@ cursor.execute(
 , r.description as description
 , r.DetailedDescription as detailed_description
 , r.RepositoryDescription as system_description
-, STUFF((select '~|~' +  t.name from app.ReportTagLinks l inner join app.Tags t on l.tagid = t.tagid where l.reportid = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') as certification_tag
+, STUFF((select '~|~' +  t.name from dbo.ReportTagLinks l inner join dbo.Tags t on l.tagid = t.tagid where l.reportid = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') as certification_tag
 , isnull(report_type.ShortName, report_type.name) as report_type
 , r.reportobjecttypeid as report_type_id
 , author.Fullname_calc as created_by
@@ -147,7 +147,7 @@ cursor.execute(
 , r.LastLoadDate as etl_date
 , r.ReportObjectUrl as run_url
 , STUFF((select '~|~' +  q.Query from dbo.ReportObjectQuery q where q.ReportObjectId = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') query
-, STUFF((select '~|~' +  f.FragilityTagName from app.ReportObjectDocFragilityTags t inner join app.FragilityTag f on t.FragilityTagID = f.FragilityTagID where t.ReportObjectId = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') tag
+, STUFF((select '~|~' +  f.name from app.ReportObjectDocFragilityTags t inner join app.FragilityTag f on t.FragilityTagID = f.id where t.ReportObjectId = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') tag
 
 
 , case when isnull(cast(d.ReportObjectID as nvarchar),'N') = 'N' then 'N' else 'Y' end as documented
@@ -156,11 +156,11 @@ cursor.execute(
 , doc_updater.Fullname_calc as updated_by
 , doc_creator.Fullname_calc as created_by
 , d.LastUpdateDateTime as last_updated
-, ms.MaintenanceScheduleName as maintenance_schedule
+, ms.name as maintenance_schedule
 , isnull(d.ExecutiveVisibilityYN, 'N') as executive_visibility
-, fr.FragilityName as fragility
-, rf.EstimatedRunFrequencyName as estimated_run_frequency
-, ov.OrganizationalValueName as organizational_value
+, fr.name as fragility
+, rf.name as estimated_run_frequency
+, ov.name as organizational_value
 , d.CreatedDateTime as created
 , requester.Fullname_calc as requester
 , ops_owner.Fullname_calc as ops_owner
@@ -170,11 +170,11 @@ cursor.execute(
 , STUFF((select '~|~' +  t.name from app.ReportObjectDocTerms dt inner join app.Term t on dt.TermId = t.termid where dt.reportobjectid = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') term_name
 , STUFF((select '~|~' +  t.Summary + '~|~' + t.TechnicalDefinition from app.ReportObjectDocTerms dt inner join app.Term t on dt.TermId = t.termid where dt.reportobjectid = r.ReportObjectID  FOR XML PATH('')), 1, 3, '') term_description
 
-, STUFF((select '~|~' +  p.name from app.CollectionReport a inner join app.Collection p on a.DataProjectId = p.DataProjectID where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_name
-, STUFF((select '~|~' +  p.Description + '~|~' + p.Purpose from app.CollectionReport a inner join app.Collection p on a.DataProjectId = p.DataProjectID where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_description
+, STUFF((select '~|~' +  p.name from app.CollectionReport a inner join app.Collection p on a.collectionid = p.collectionid where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_name
+, STUFF((select '~|~' +  p.Description + '~|~' + p.Purpose from app.CollectionReport a inner join app.Collection p on a.collectionid = p.collectionid where a.ReportId = r.ReportObjectID and isnull(Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') collection_description
 
-, STUFF((select '~|~' +  i.name from app.CollectionReport a inner join app.Collection p on a.DataProjectId = p.DataProjectID inner join app.Initiative i on i.DataInitiativeID=p.DataInitiativeID where a.ReportId = r.ReportObjectID and isnull(p.Hidden,'N')='N' and isnull(i.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_name
-, STUFF((select '~|~' +  i.Description + '~|~' + p.Purpose from app.CollectionReport a inner join app.Collection p on a.DataProjectId = p.DataProjectID inner join app.Initiative i on i.DataInitiativeID=p.DataInitiativeID where a.ReportId = r.ReportObjectID and isnull(p.Hidden,'N')='N' and isnull(i.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_description
+, STUFF((select '~|~' +  i.name from app.CollectionReport a inner join app.Collection p on a.collectionid = p.collectionid inner join app.Initiative i on i.InitiativeID=p.InitiativeID where a.ReportId = r.ReportObjectID and isnull(p.Hidden,'N')='N' and isnull(i.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_name
+, STUFF((select '~|~' +  i.Description + '~|~' + p.Purpose from app.CollectionReport a inner join app.Collection p on a.collectionid = p.collectionid inner join app.Initiative i on i.InitiativeID=p.InitiativeID where a.ReportId = r.ReportObjectID and isnull(p.Hidden,'N')='N' and isnull(i.Hidden,'N')='N' FOR XML PATH('')), 1, 3, '') initiative_description
 
 
 
@@ -185,10 +185,10 @@ left outer join #user_temp as author on r.AuthorUserID = author.UserId
 left outer join #user_temp as updater on r.LastModifiedByUserID = updater.UserId
 left outer join #user_temp as doc_updater on d.UpdatedBy = doc_updater.UserId
 left outer join #user_temp as doc_creator on d.UpdatedBy = doc_creator.UserId
-left outer join app.MaintenanceSchedule ms on ms.MaintenanceScheduleID = d.MaintenanceScheduleID
-left outer join app.Fragility fr on fr.FragilityID = d.FragilityID
-left outer join app.EstimatedRunFrequency rf on rf.EstimatedRunFrequencyID = d.EstimatedRunFrequencyID
-left outer join app.OrganizationalValue ov on ov.OrganizationalValueID = d.OrganizationalValueID
+left outer join app.MaintenanceSchedule ms on ms.id = d.MaintenanceScheduleID
+left outer join app.Fragility fr on fr.id = d.FragilityID
+left outer join app.EstimatedRunFrequency rf on rf.id = d.EstimatedRunFrequencyID
+left outer join app.OrganizationalValue ov on ov.id = d.OrganizationalValueID
 left outer join #user_temp as requester on requester.UserId = d.Requester
 left outer join #user_temp as ops_owner on ops_owner.UserId = d.OperationalOwnerUserID
 
