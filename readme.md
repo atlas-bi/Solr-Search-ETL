@@ -38,7 +38,7 @@ This ETL uses python > 3.7. Python can be installed from [https://www.python.org
 
 ### Install Packages
 
-This package uses `poetry` as the package manager. Alternatively, you can use `pip` to install the dependencies listed in `pyproject.toml`/dependencies.
+This ETL uses `poetry` as the package manager. Alternatively, you can use `pip` to install the dependencies listed in `pyproject.toml`/dependencies.
 
 ```bash
 poetry install
