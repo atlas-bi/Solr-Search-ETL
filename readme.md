@@ -18,8 +18,6 @@
 
 > In order to use these scripts you should already have Atlas published, with Solr started. See the [Atlas BI Libary docs](https://www.atlas.bi/docs/bi_library/).
 
-### Starting Solr in Development
-
 ### Dependencies
 
 #### Java
