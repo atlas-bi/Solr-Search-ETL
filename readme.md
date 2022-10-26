@@ -20,11 +20,23 @@
 
 ### Starting Solr in Development
 
+### Dependencies
+
+#### Java
+
 For development purposes, sorl search can be started directly from the Atlas source code.
 
 1. Install [Java JRE](https://www.oracle.com/java/technologies/downloads/)
 2. Add a system environment variable called `JAVA_HOME` with the path to java, for example `C:\Program Files\Java\jdk-17.0.1`.
 3. In your terminal navigate to `/web/solr/` in the Atlas source code. Run `./bin/solr start` to start solr.
+
+#### Python
+
+This ETL uses python > 3.7. Python can be installed from [https://www.python.org/downloads/](https://www.python.org/downloads/)
+
+[C++ build tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) are needed on Windows OS.
+
+
 
 ### Install Packages
 
