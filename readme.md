@@ -18,18 +18,58 @@
 
 > In order to use these scripts you should already have Atlas published, with Solr started. See the [Atlas BI Libary docs](https://www.atlas.bi/docs/bi_library/).
 
+### Dependencies
 
-1. Variables can either be set in the environment, or added to a `.env` file.
+#### Java
 
-```py
+For development purposes, sorl search can be started directly from the Atlas source code.
+
+1. Install [Java JRE](https://www.oracle.com/java/technologies/downloads/)
+2. Add a system environment variable called `JAVA_HOME` with the path to java, for example `C:\Program Files\Java\jdk-17.0.1`.
+3. In your terminal navigate to `/web/solr/` in the Atlas source code. Run `./bin/solr start` to start solr.
+
+#### Python
+
+This ETL uses python > 3.7. Python can be installed from [https://www.python.org/downloads/](https://www.python.org/downloads/)
+
+[C++ build tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) are needed on Windows OS.
+
+[ODBC Driver for SQL Server](https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server?view=sql-server-ver16) is required for connecting to the database.
+
+### Install Packages
+
+This ETL uses `poetry` as the package manager. Alternatively, you can use `pip` to install the dependencies listed in `pyproject.toml`/dependencies.
+
+```bash
+poetry install
+```
+
+### Create a `.env` file
+
+Variables can either be set in the environment, or added to a `.env` file.
+
+```env
 SOLRURL=http://localhost:8983/solr/atlas
 SOLRLOOKUPURL=http://localhost:8983/solr/atlas_lookups
 ATLASDATABASE=DRIVER={ODBC Driver 18 for SQL Server};SERVER=server_name;DATABASE=atlas;UID=user_name;PWD=password;TrustServerCertificate=Yes;"
 ```
 
-2. `delete.py` script should be run once daily to empty Solr.
-3. The remaining `atlas_*.py` scripts can be run periodically through the day to keep search results current.
+### Running
 
+`delete.py` script should be run once daily to empty Solr.
+
+The remaining `atlas_*.py` scripts can be run periodically through the day to keep search results current.
+
+```bash
+poetry run python delete.py
+poetry run python atlas_collections.py
+poetry run python atlas_initiatives.py
+poetry run python atlas_groups.py
+poetry run python atlas_terms.py
+poetry run python atlas_lookups.py
+poetry run python atlas_users.py
+poetry run python atlas_reports.py
+```
 ## 🎁 Contributing
 
 This repository uses pre-commit and commitzen. Please commit `npm run commit && git push`.
