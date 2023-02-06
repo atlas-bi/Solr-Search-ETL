@@ -51,7 +51,6 @@ def solr_load_batch(build_doc: Dict, url: str, batch: List) -> None:
 def rows(cursor: Any, columns: List[str], size: int = 500) -> Generator:
     """Return data from query by a generator."""
     for iteration in itertools.count():
-
         fetched_rows = cursor.fetchmany(size)
 
         if not fetched_rows:
