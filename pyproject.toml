@@ -6,11 +6,11 @@ authors = ["Christopher Pickering <cpickering@rhc.net>"]
 license = "GPL-3.0-or-later"
 
 [tool.poetry.dependencies]
-python = "^3.7.2"
+python = "^3.8.2"
 pyodbc = "^4.0.32"
 pysolr = "^3.9.0"
 pytz = "^2022.1"
-python-dotenv = "^0.21.0"
+python-dotenv = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
 tox = "^4.0.0"
