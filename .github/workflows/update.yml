@@ -1,0 +1,29 @@
+name: Sync Updates
+on:
+  push:
+    branches:
+      - 'dev'
+      - 'alpha'
+
+jobs:
+  alpha:
+    runs-on: ubuntu-latest
+    if: github.ref_name == 'dev'
+    steps:
+    - uses: actions/checkout@v3
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v4.2.4
+      with:
+        base: alpha
+        labels: automated pr
+
+  master:
+    runs-on: ubuntu-latest
+    if: github.ref_name == 'alpha'
+    steps:
+    - uses: actions/checkout@v3
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v4.2.4
+      with:
+        base: master
+        labels: automated pr
