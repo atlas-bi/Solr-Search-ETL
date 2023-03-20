@@ -1,7 +1,9 @@
 name: Sync Updates
 on:
   push:
-    branches: [dev, alpha]
+    branches:
+      - 'dev'
+      - 'alpha'
 
 jobs:
   alpha:
