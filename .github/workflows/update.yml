@@ -21,6 +21,7 @@ jobs:
       uses: peter-evans/create-pull-request@v4.2.4
       with:
         labels: automated pr
+        delete-branch: true
 
   master:
     runs-on: ubuntu-latest
@@ -37,3 +38,4 @@ jobs:
       uses: peter-evans/create-pull-request@v4.2.4
       with:
         labels: automated pr
+        delete-branch: true
