@@ -1,6 +1,6 @@
 {
   "name": "atlas-etl-solr",
-  "version": "1.4.8",
+  "version": "1.4.11",
   "description": "Atlas BI Library Search ETL",
   "private": true,
   "scripts": {
@@ -19,14 +19,14 @@
   "homepage": "https://github.com/atlas-bi/Solr-Search-ETL#readme",
   "devDependencies": {
     "@semantic-release/changelog": "6.0.3",
-    "@semantic-release/commit-analyzer": "9.0.2",
+    "@semantic-release/commit-analyzer": "10.0.1",
     "@semantic-release/exec": "6.0.3",
     "@semantic-release/git": "10.0.1",
-    "@semantic-release/github": "8.1.0",
+    "@semantic-release/github": "9.0.3",
     "@semantic-release/npm": "10.0.3",
-    "@semantic-release/release-notes-generator": "11.0.2",
+    "@semantic-release/release-notes-generator": "11.0.3",
     "cz-conventional-changelog": "3.3.0",
-    "semantic-release": "21.0.2"
+    "semantic-release": "21.0.3"
   },
   "config": {
     "commitizen": {
