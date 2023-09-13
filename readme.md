@@ -52,6 +52,11 @@ Variables can either be set in the environment, or added to a `.env` file.
 SOLRURL=http://localhost:8983/solr/atlas
 SOLRLOOKUPURL=http://localhost:8983/solr/atlas_lookups
 ATLASDATABASE=DRIVER={ODBC Driver 18 for SQL Server};SERVER=server_name;DATABASE=atlas;UID=user_name;PWD=password;TrustServerCertificate=Yes;"
+
+# Optional for bookstack etl
+BOOKSTACKURL=https://docs.example.com
+BOOKSTACKTOKENID=123456
+BOOKSTACKTOKENSECRET=78910111213
 ```
 
 ### Running
@@ -69,7 +74,11 @@ poetry run python atlas_terms.py
 poetry run python atlas_lookups.py
 poetry run python atlas_users.py
 poetry run python atlas_reports.py
+
+# Optional etl to load documents from bookstack. Use this as an example etl for loading external content into search!
+poetry run python atlas_bookstack.py
 ```
+
 ## 🎁 Contributing
 
 This repository uses pre-commit and commitzen. Please commit `npm run commit && git push`.
