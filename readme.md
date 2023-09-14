@@ -2,7 +2,7 @@
 <h4 align="center">Atlas BI Library ETL | Solr Search Engine</h4>
 
 <p align="center">
- <a href="https://www.atlas.bi" target="_blank">Website</a> • <a href="https://demo.atlas.bi" target="_blank">Demo</a> • <a href="https://www.atlas.bi/docs/bi-library/" target="_blank">Documentation</a> • <a href="https://discord.gg/hdz2cpygQD" target="_blank">Chat</a>
+ <a href="https://www.atlas.bi" target="_blank">Website</a> • <a href="https://demo.atlas.bi" target="_blank">Demo</a> • <a href="https://www.atlas.bi/docs/library/" target="_blank">Documentation</a> • <a href="https://discord.gg/hdz2cpygQD" target="_blank">Chat</a>
 </p>
 
 <p align="center">
@@ -30,7 +30,7 @@ For development purposes, sorl search can be started directly from the Atlas sou
 
 #### Python
 
-This ETL uses python > 3.7. Python can be installed from [https://www.python.org/downloads/](https://www.python.org/downloads/)
+This ETL uses python > 3.8. Python can be installed from [https://www.python.org/downloads/](https://www.python.org/downloads/)
 
 [C++ build tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) are needed on Windows OS.
 
@@ -52,6 +52,11 @@ Variables can either be set in the environment, or added to a `.env` file.
 SOLRURL=http://localhost:8983/solr/atlas
 SOLRLOOKUPURL=http://localhost:8983/solr/atlas_lookups
 ATLASDATABASE=DRIVER={ODBC Driver 18 for SQL Server};SERVER=server_name;DATABASE=atlas;UID=user_name;PWD=password;TrustServerCertificate=Yes;"
+
+# Optional for bookstack etl
+BOOKSTACKURL=https://docs.example.com
+BOOKSTACKTOKENID=123456
+BOOKSTACKTOKENSECRET=78910111213
 ```
 
 ### Running
@@ -69,7 +74,11 @@ poetry run python atlas_terms.py
 poetry run python atlas_lookups.py
 poetry run python atlas_users.py
 poetry run python atlas_reports.py
+
+# Optional etl to load documents from bookstack. Use this as an example etl for loading external content into search!
+poetry run python atlas_bookstack.py
 ```
+
 ## 🎁 Contributing
 
 This repository uses pre-commit and commitzen. Please commit `npm run commit && git push`.

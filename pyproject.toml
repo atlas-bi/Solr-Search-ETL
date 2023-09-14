@@ -11,12 +11,13 @@ pyodbc = "^4.0.32"
 pysolr = "^3.9.0"
 pytz = "^2022.1"
 python-dotenv = "^1.0.0"
+requests = "^2.31.0"
 
-[tool.poetry.dev-dependencies]
-tox = "^4.0.0"
-pylint = "^2.15.0"
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.0.287"
 isort = "^5.10.1"
 black = "^23.0.0"
+tox = "^4.0.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -40,5 +41,5 @@ exclude = '''
 [tool.isort]
 profile = "black"
 
-[tool.pylint.messages_control]
-disable = "C0103"
+[tool.ruff]
+select = ["S", 'T20', 'SIM', 'C4', 'PL', 'N', 'A']
