@@ -1,6 +1,6 @@
 {
   "name": "atlas-etl-solr",
-  "version": "1.4.23",
+  "version": "1.4.24",
   "description": "Atlas BI Library Search ETL",
   "private": true,
   "scripts": {
@@ -26,7 +26,7 @@
     "@semantic-release/npm": "11.0.0",
     "@semantic-release/release-notes-generator": "12.0.0",
     "cz-conventional-changelog": "3.3.0",
-    "semantic-release": "21.1.2"
+    "semantic-release": "22.0.1"
   },
   "config": {
     "commitizen": {
