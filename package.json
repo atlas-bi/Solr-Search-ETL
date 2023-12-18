@@ -1,6 +1,6 @@
 {
   "name": "atlas-etl-solr",
-  "version": "1.4.34",
+  "version": "1.5.0",
   "description": "Atlas BI Library Search ETL",
   "private": true,
   "scripts": {
