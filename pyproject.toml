@@ -7,14 +7,14 @@ license = "GPL-3.0-or-later"
 
 [tool.poetry.dependencies]
 python = "^3.8.2"
-pyodbc = "^4.0.32"
+pyodbc = "^5.0.0"
 pysolr = "^3.9.0"
 pytz = "^2022.1"
 python-dotenv = "^1.0.0"
 requests = "^2.31.0"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.0.287"
+ruff = "^0.1.0"
 isort = "^5.10.1"
 black = "^23.0.0"
 tox = "^4.0.0"
