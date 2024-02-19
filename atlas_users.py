@@ -1,4 +1,5 @@
 """Load atlas users to solr search."""
+
 import os
 from functools import partial
 from types import SimpleNamespace

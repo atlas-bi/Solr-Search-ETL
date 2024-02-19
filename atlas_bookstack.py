@@ -1,4 +1,5 @@
 """Atlas ETL for Bookstack integrations."""
+
 import os
 import re
 from functools import partial
