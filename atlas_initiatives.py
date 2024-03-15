@@ -1,4 +1,5 @@
 """Atlas Solr ETL for Initiatives."""
+
 import os
 from functools import partial
 from types import SimpleNamespace
