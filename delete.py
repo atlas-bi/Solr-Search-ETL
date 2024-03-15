@@ -1,4 +1,5 @@
 """Delete script is run once daily to clean out any removed data."""
+
 import os
 
 import pysolr
