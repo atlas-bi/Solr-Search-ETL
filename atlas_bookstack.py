@@ -1,4 +1,5 @@
 """Atlas ETL for Bookstack integrations."""
+
 import os
 import re
 from functools import partial
@@ -15,6 +16,7 @@ SOLRURL = os.environ.get("SOLRURL", "https://solr.example.com/solr/atlas")
 BOOKSTACKURL = os.environ.get("BOOKSTACKURL", "https://docs.example.com/").strip("/")
 BOOKSTACKTOKENID = os.environ.get("BOOKSTACKTOKENID", "123456")
 BOOKSTACKTOKENSECRET = os.environ.get("BOOKSTACKTOKENSECRET", "78910111213")
+DEFAULTVISIBILITY = os.environ.get("DEFAULTVISIBILITY", "N")
 
 headers = {"Authorization": f"Token {BOOKSTACKTOKENID}:{BOOKSTACKTOKENSECRET}"}
 
@@ -45,7 +47,7 @@ def build_doc(page: Dict) -> Dict:
         "type": "external",
         "name": page_data["name"],
         "description": [re.sub(r"\s+", " ", page_text.replace("\n", " ")).strip()],
-        "visible": "N",  # "Y" if page_data["draft"] == False else "N",
+        "visible": DEFAULTVISIBILITY,  # "Y" if page_data["draft"] == False else "N",
         "orphan": "N",
         "runs": 10,
         # is a valid date, but we can remove ms for solr.
