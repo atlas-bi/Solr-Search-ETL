@@ -3,6 +3,7 @@
 import itertools
 import os
 import re
+import time
 from datetime import datetime
 from types import SimpleNamespace
 from typing import Any, Dict, Generator, List, Optional, Tuple, Union
@@ -10,6 +11,7 @@ from typing import Any, Dict, Generator, List, Optional, Tuple, Union
 import pyodbc
 import pysolr
 import pytz
+import requests
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -17,6 +19,26 @@ ATLASDATABASE = os.environ.get(
     "ATLASDATABASE",
     "DRIVER={ODBC Driver 18 for SQL Server};SERVER=atlas_server;DATABASE=atlas;UID=mr_cool;PWD=12345;TrustServerCertificate=Yes;",
 )
+
+
+def get_page(url, headers, timeout):
+    """Download a url, check status code."""
+    retries = 1
+    while retries < 5:  # noqa: PLR2004
+        try:
+            page = requests.get(url, headers=headers, timeout=timeout)
+
+            if page.status_code != 200:  # noqa: PLR2004
+                raise ValueError("status code error:", page.status_code)
+        except Exception as e:
+            wait = retries * 5
+            print(  # noqa: T201
+                f"Error! Waiting {wait} secs and re-trying {url}...\n{e}"
+            )
+            time.sleep(wait)
+            retries += 1
+
+    raise ValueError("Page could not be loaded")
 
 
 def clean_doc(doc: Dict) -> Dict:
