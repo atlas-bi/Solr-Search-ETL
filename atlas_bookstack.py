@@ -59,7 +59,7 @@ def build_doc(page: Dict) -> Dict:
         print("error:")  # noqa: T201
         print(page_data)  # noqa: T201
         print(e)  # noqa: T201
-        pass
+
 
 while len(pages) > 0:
     batch_loader = partial(solr_load_batch, build_doc, SOLRURL)
