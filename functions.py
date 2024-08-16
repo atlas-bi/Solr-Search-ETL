@@ -1,4 +1,5 @@
 """Atlas Solr ETL shared functions."""
+
 import itertools
 import os
 import re
