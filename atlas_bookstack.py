@@ -5,10 +5,9 @@ import re
 from functools import partial
 from typing import Dict
 
-import requests
 from dotenv import load_dotenv
 
-from functions import solr_load_batch
+from functions import get_page, solr_load_batch
 
 load_dotenv()
 
@@ -27,16 +26,16 @@ url_params = f"?sort=-created_at&count={download_batch_size}"
 
 pages_url = f"{BOOKSTACKURL}/api/pages?count={download_batch_size}&filter[draft]=False"
 
-pages = requests.get(
+pages = get_page(
     f"{pages_url}&offset={download_offset}", headers=headers, timeout=10
 ).json()["data"]
 
 
 def build_doc(page: Dict) -> Dict:
-    page_data = requests.get(
+    page_data = get_page(
         f"{BOOKSTACKURL}/api/pages/{page['id']}", headers=headers, timeout=10
     ).json()
-    page_text = requests.get(
+    page_text = get_page(
         f"{BOOKSTACKURL}/api/pages/{page['id']}/export/plaintext",
         headers=headers,
         timeout=10,
@@ -59,13 +58,13 @@ def build_doc(page: Dict) -> Dict:
         print("error:")  # noqa: T201
         print(page_data)  # noqa: T201
         print(e)  # noqa: T201
-        pass
+
 
 while len(pages) > 0:
     batch_loader = partial(solr_load_batch, build_doc, SOLRURL)
     list(map(batch_loader, [pages]))
 
     download_offset += download_batch_size
-    pages = requests.get(
+    pages = get_page(
         f"{pages_url}&offset={download_offset}", headers=headers, timeout=10
     ).json()["data"]
