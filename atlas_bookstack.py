@@ -61,7 +61,6 @@ def build_doc(page: Dict) -> Dict:
         print(e)  # noqa: T201
         pass
 
-
 while len(pages) > 0:
     batch_loader = partial(solr_load_batch, build_doc, SOLRURL)
     list(map(batch_loader, [pages]))
