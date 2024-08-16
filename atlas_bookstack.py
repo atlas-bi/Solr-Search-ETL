@@ -56,9 +56,9 @@ def build_doc(page: Dict) -> Dict:
             "updated_by": str(page_data["updated_by"]["name"]),
         }
     except BaseException as e:
-        print("error:")
-        print(page_data)
-        print(e)
+        print("error:")  # noqa: T201
+        print(page_data)  # noqa: T201
+        print(e)  # noqa: T201
         pass
 
 
