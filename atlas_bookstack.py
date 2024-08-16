@@ -59,7 +59,6 @@ def build_doc(page: Dict) -> Dict:
         print("error:")
         print(page_data)
         print(e)
-        pass
 
 
 while len(pages) > 0:
