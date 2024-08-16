@@ -40,18 +40,24 @@ def build_doc(page: Dict) -> Dict:
         timeout=10,
     ).text
 
-    return {
-        "id": f"{BOOKSTACKURL}/books/{page['book_slug']}/page/{page_data['slug']}",
-        "type": "external",
-        "name": page_data["name"],
-        "description": [re.sub(r"\s+", " ", page_text.replace("\n", " ")).strip()],
-        "visible": "N",  # "Y" if page_data["draft"] == False else "N",
-        "orphan": "N",
-        "runs": 10,
-        # is a valid date, but we can remove ms for solr.
-        "last_updated": page_data["updated_at"].split(".")[0] + "Z",
-        "updated_by": str(page_data["updated_by"]["name"]),
-    }
+    try:
+        return {
+            "id": f"{BOOKSTACKURL}/books/{page['book_slug']}/page/{page_data['slug']}",
+            "type": "external",
+            "name": page_data["name"],
+            "description": [re.sub(r"\s+", " ", page_text.replace("\n", " ")).strip()],
+            "visible": "N",  # "Y" if page_data["draft"] == False else "N",
+            "orphan": "N",
+            "runs": 10,
+            # is a valid date, but we can remove ms for solr.
+            "last_updated": page_data["updated_at"].split(".")[0] + "Z",
+            "updated_by": str(page_data["updated_by"]["name"]),
+        }
+    except BaseException as e:
+        print("error:")
+        print(page_data)
+        print(e)
+        pass
 
 
 while len(pages) > 0:
