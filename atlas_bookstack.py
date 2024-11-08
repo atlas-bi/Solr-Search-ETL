@@ -68,5 +68,5 @@ while len(pages) > 0:
 
     download_offset += download_batch_size
     pages = requests.get(
-        f"{pages_url}&offset={download_offset}", headers=headers, timeout=10
+        f"{pages_url}&offset={download_offset}", headers=headers, timeout=10, verify=False
     ).json()["data"]
