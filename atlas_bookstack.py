@@ -1,5 +1,5 @@
 """Atlas ETL for Bookstack integrations."""
-import ssl
+
 import os
 import re
 from functools import partial
@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 from functions import solr_load_batch
 
 load_dotenv()
-ssl._create_default_https_context = ssl._create_unverified_context
+
 SOLRURL = os.environ.get("SOLRURL", "https://solr.example.com/solr/atlas")
 BOOKSTACKURL = os.environ.get("BOOKSTACKURL", "https://docs.example.com/").strip("/")
 BOOKSTACKTOKENID = os.environ.get("BOOKSTACKTOKENID", "123456")
@@ -28,7 +28,7 @@ url_params = f"?sort=-created_at&count={download_batch_size}"
 pages_url = f"{BOOKSTACKURL}/api/pages?count={download_batch_size}&filter[draft]=False"
 
 pages = requests.get(
-    f"{pages_url}&offset={download_offset}", headers=headers, timeout=10
+    f"{pages_url}&offset={download_offset}", headers=headers, timeout=10, verify=False
 ).json()["data"]
 
 
