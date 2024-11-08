@@ -40,6 +40,7 @@ def build_doc(page: Dict) -> Dict:
         f"{BOOKSTACKURL}/api/pages/{page['id']}/export/plaintext",
         headers=headers,
         timeout=10,
+        verify=False
     ).text
 
     try:
