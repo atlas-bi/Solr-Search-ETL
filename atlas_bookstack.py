@@ -34,7 +34,7 @@ pages = requests.get(
 
 def build_doc(page: Dict) -> Dict:
     page_data = requests.get(
-        f"{BOOKSTACKURL}/api/pages/{page['id']}", headers=headers, timeout=10
+        f"{BOOKSTACKURL}/api/pages/{page['id']}", headers=headers, timeout=10, verify=False
     ).json()
     page_text = requests.get(
         f"{BOOKSTACKURL}/api/pages/{page['id']}/export/plaintext",
