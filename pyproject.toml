@@ -1,5 +1,6 @@
 [tool.poetry]
 name = "atlas-etl-solr"
+package-mode = false
 version = "1.5.2"
 description = "Atlas BI Library Search ETL"
 authors = ["Christopher Pickering <cpickering@rhc.net>"]
