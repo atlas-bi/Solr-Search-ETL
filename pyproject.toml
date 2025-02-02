@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "atlas-etl-solr"
 package-mode = false
-version = "1.5.2"
+version = "1.5.3"
 description = "Atlas BI Library Search ETL"
 authors = ["Christopher Pickering <cpickering@rhc.net>"]
 license = "GPL-3.0-or-later"
@@ -16,7 +16,7 @@ requests = "^2.31.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.4.0"
-isort = "^5.10.1"
+isort = "^6.0.0"
 black = "^24.0.0"
 tox = "^4.0.0"
 
