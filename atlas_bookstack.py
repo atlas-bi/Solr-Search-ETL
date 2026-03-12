@@ -17,6 +17,12 @@ BOOKSTACKURL = os.environ.get("BOOKSTACKURL", "https://docs.example.com/").strip
 BOOKSTACKTOKENID = os.environ.get("BOOKSTACKTOKENID", "123456")
 BOOKSTACKTOKENSECRET = os.environ.get("BOOKSTACKTOKENSECRET", "78910111213")
 DEFAULTVISIBILITY = os.environ.get("DEFAULTVISIBILITY", "N")
+BOOKSTACK_VERIFY_SSL = os.environ.get("BOOKSTACK_VERIFY_SSL", "true").lower() in [
+    "1",
+    "true",
+    "yes",
+    "y",
+]
 
 headers = {"Authorization": f"Token {BOOKSTACKTOKENID}:{BOOKSTACKTOKENSECRET}"}
 
@@ -28,19 +34,25 @@ url_params = f"?sort=-created_at&count={download_batch_size}"
 pages_url = f"{BOOKSTACKURL}/api/pages?count={download_batch_size}&filter[draft]=False"
 
 pages = requests.get(
-    f"{pages_url}&offset={download_offset}", headers=headers, timeout=10, verify=False
+    f"{pages_url}&offset={download_offset}",
+    headers=headers,
+    timeout=10,
+    verify=BOOKSTACK_VERIFY_SSL,
 ).json()["data"]
 
 
 def build_doc(page: Dict) -> Dict:
     page_data = requests.get(
-        f"{BOOKSTACKURL}/api/pages/{page['id']}", headers=headers, timeout=10, verify=False
+        f"{BOOKSTACKURL}/api/pages/{page['id']}",
+        headers=headers,
+        timeout=10,
+        verify=BOOKSTACK_VERIFY_SSL,
     ).json()
     page_text = requests.get(
         f"{BOOKSTACKURL}/api/pages/{page['id']}/export/plaintext",
         headers=headers,
         timeout=10,
-        verify=False
+        verify=BOOKSTACK_VERIFY_SSL,
     ).text
 
     try:
@@ -68,5 +80,8 @@ while len(pages) > 0:
 
     download_offset += download_batch_size
     pages = requests.get(
-        f"{pages_url}&offset={download_offset}", headers=headers, timeout=10, verify=False
+        f"{pages_url}&offset={download_offset}",
+        headers=headers,
+        timeout=10,
+        verify=BOOKSTACK_VERIFY_SSL,
     ).json()["data"]
