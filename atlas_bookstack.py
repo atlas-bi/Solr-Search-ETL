@@ -5,9 +5,10 @@ import re
 from functools import partial
 from typing import Dict
 
+import requests
 from dotenv import load_dotenv
 
-from functions import get_page, solr_load_batch
+from functions import solr_load_batch
 
 load_dotenv()
 
@@ -47,7 +48,7 @@ def build_doc(page: Dict) -> Dict:
         timeout=10,
         verify=BOOKSTACK_VERIFY_SSL,
     ).json()
-    page_text = get_page(
+    page_text = requests.get(
         f"{BOOKSTACKURL}/api/pages/{page['id']}/export/plaintext",
         headers=headers,
         timeout=10,
