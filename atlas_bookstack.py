@@ -34,13 +34,16 @@ pages = requests.get(
 
 def build_doc(page: Dict) -> Dict:
     page_data = requests.get(
-        f"{BOOKSTACKURL}/api/pages/{page['id']}", headers=headers, timeout=10, verify=False
+        f"{BOOKSTACKURL}/api/pages/{page['id']}",
+        headers=headers,
+        timeout=10,
+        verify=False,
     ).json()
     page_text = requests.get(
         f"{BOOKSTACKURL}/api/pages/{page['id']}/export/plaintext",
         headers=headers,
         timeout=10,
-        verify=False
+        verify=False,
     ).text
 
     try:
@@ -68,5 +71,8 @@ while len(pages) > 0:
 
     download_offset += download_batch_size
     pages = requests.get(
-        f"{pages_url}&offset={download_offset}", headers=headers, timeout=10, verify=False
+        f"{pages_url}&offset={download_offset}",
+        headers=headers,
+        timeout=10,
+        verify=False,
     ).json()["data"]
