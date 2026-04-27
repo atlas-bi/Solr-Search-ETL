@@ -92,8 +92,7 @@ def build_doc(initiative: SimpleNamespace) -> Dict:
 
 cnxn, cursor = connect()
 
-cursor.execute(
-    """select
+cursor.execute("""select
   i.InitiativeID as initiative_id
 , i.name as name
 , ops_owner.Fullname_calc as ops_owner
@@ -120,8 +119,7 @@ left outer join dbo.[User] exec_owner on i.OperationOwnerID = exec_owner.UserId
 left outer join app.FinancialImpact f on i.FinancialImpact = f.id
 left outer join app.StrategicImportance s on s.id = i.StrategicImportance
 left outer join dbo.[User] updater on updater.UserId = i.LastUpdateUser
-"""
-)
+""")
 
 columns = [column[0] for column in cursor.description]
 
