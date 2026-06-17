@@ -45,14 +45,10 @@ def build_doc(term: SimpleNamespace) -> Dict:
         "last_updated": solr_date(term.modified_at),
         "updated_by": str(term.modified_by),
         "related_collections": (
-            [x for x in term.collection_name.split("~|~") if x]
-            if term.collection_name
-            else []
+            [x for x in term.collection_name.split("~|~") if x] if term.collection_name else []
         ),
         "related_initiatives": (
-            [x for x in term.initiative_name.split("~|~") if x]
-            if term.initiative_name
-            else []
+            [x for x in term.initiative_name.split("~|~") if x] if term.initiative_name else []
         ),
         "related_terms": [],  # keep blank
         "related_reports": (
@@ -62,20 +58,12 @@ def build_doc(term: SimpleNamespace) -> Dict:
             [x for x in term.linked_name.split("~|~") if x] if term.linked_name else []
         ),
         "linked_description": (
-            [
-                clean_description(x)
-                for x in term.collection_description.split("~|~")
-                if x
-            ]
+            [clean_description(x) for x in term.collection_description.split("~|~") if x]
             if term.collection_description
             else []
         )
         + (
-            [
-                clean_description(x)
-                for x in term.initiative_description.split("~|~")
-                if x
-            ]
+            [clean_description(x) for x in term.initiative_description.split("~|~") if x]
             if term.initiative_description
             else []
         )

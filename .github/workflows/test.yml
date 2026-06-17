@@ -13,13 +13,13 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Setup Poetry
-      uses: snok/install-poetry@v1
+    - name: Setup uv
+      uses: astral-sh/setup-uv@v5
 
     - name: Install
       run: |
-        poetry install
+        uv sync --locked
 
     - name: run lint
       run: |
-        poetry run tox -e lint
+        uv run tox -e lint
