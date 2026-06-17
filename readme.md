@@ -38,10 +38,10 @@ This ETL uses python > 3.8. Python can be installed from [https://www.python.org
 
 ### Install Packages
 
-This ETL uses `poetry` as the package manager. Alternatively, you can use `pip` to install the dependencies listed in `pyproject.toml`/dependencies.
+This ETL uses `uv` as the package manager. Alternatively, you can use `pip` to install the dependencies listed in `pyproject.toml`.
 
 ```bash
-poetry install
+uv sync
 ```
 
 ### Create a `.env` file
@@ -66,17 +66,17 @@ BOOKSTACKTOKENSECRET=78910111213
 The remaining `atlas_*.py` scripts can be run periodically through the day to keep search results current.
 
 ```bash
-poetry run python delete.py
-poetry run python atlas_collections.py
-poetry run python atlas_initiatives.py
-poetry run python atlas_groups.py
-poetry run python atlas_terms.py
-poetry run python atlas_lookups.py
-poetry run python atlas_users.py
-poetry run python atlas_reports.py
+uv run python delete.py
+uv run python atlas_collections.py
+uv run python atlas_initiatives.py
+uv run python atlas_groups.py
+uv run python atlas_terms.py
+uv run python atlas_lookups.py
+uv run python atlas_users.py
+uv run python atlas_reports.py
 
 # Optional etl to load documents from bookstack. Use this as an example etl for loading external content into search!
-poetry run python atlas_bookstack.py
+uv run python atlas_bookstack.py
 ```
 
 ## 🎁 Contributing

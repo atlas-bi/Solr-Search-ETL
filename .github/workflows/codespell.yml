@@ -8,6 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Codespell action
-      uses: codespell-project/actions-codespell@master
+      uses: codespell-project/actions-codespell@3b7da264292a727fcdc4acdc9eaf9a5abb92ba10
       with:
         skip: '*.min.js'

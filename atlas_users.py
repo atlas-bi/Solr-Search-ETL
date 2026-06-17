@@ -24,12 +24,8 @@ def build_doc(user: SimpleNamespace) -> Dict:
         "employee_id": user.employee_id,
         "email": user.email,
         "epic_record_id": user.system_id,
-        "user_roles": (
-            [x.strip() for x in user.roles.split("|")] if user.roles else []
-        ),
-        "user_groups": (
-            [x.strip() for x in user.groups.split("|")] if user.groups else []
-        ),
+        "user_roles": ([x.strip() for x in user.roles.split("|")] if user.roles else []),
+        "user_groups": ([x.strip() for x in user.groups.split("|")] if user.groups else []),
         "visible": user.visible,
         "orphan": "N",
         "runs": 10,

@@ -26,9 +26,7 @@ def build_doc(group: SimpleNamespace) -> Dict:
         "visible": group.visible,
         "orphan": "N",
         "runs": 10,
-        "linked_name": (
-            [x for x in group.users.split("~|~") if x] if group.users else []
-        ),
+        "linked_name": ([x for x in group.users.split("~|~") if x] if group.users else []),
     }
 
     return clean_doc(doc)

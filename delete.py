@@ -8,9 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 SOLRURL = os.environ.get("SOLRURL", "https://solr.example.com/solr/atlas")
-SOLRLOOKUPURL = os.environ.get(
-    "SOLRLOOKUPURL", "https://solr.example.com/solr/atlas_lookups"
-)
+SOLRLOOKUPURL = os.environ.get("SOLRLOOKUPURL", "https://solr.example.com/solr/atlas_lookups")
 
 solr = pysolr.Solr(SOLRURL, always_commit=True)
 solr.delete(q="*:*")
