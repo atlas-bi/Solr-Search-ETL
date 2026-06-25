@@ -19,7 +19,7 @@ jobs:
     - name: Setup Node
       uses: actions/setup-node@v6
       with:
-        node-version: 20
+        node-version: 22
 
     - name: Setup Poetry
       uses: snok/install-poetry@76e04a911780d5b312d89783f7b1cd627778900a
