@@ -91,8 +91,7 @@ def build_doc(collection: SimpleNamespace) -> Dict:
 
 cnxn, cursor = connect()
 
-cursor.execute(
-    """select
+cursor.execute("""select
   p.collectionid as collection_id
 , p.name as name
 , p.Purpose as search_summary
@@ -117,8 +116,7 @@ cursor.execute(
 
 from app.Collection p
 left outer join dbo.[User] updater on p.LastUpdateUser = updater.UserId
-"""
-)
+""")
 
 columns = [column[0] for column in cursor.description]
 
