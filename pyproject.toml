@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "atlas-etl-solr"
 package-mode = false
-version = "1.5.4"
+version = "1.5.5"
 description = "Atlas BI Library Search ETL"
 authors = ["Christopher Pickering <cpickering@rhc.net>"]
 license = "GPL-3.0-or-later"
@@ -13,7 +13,7 @@ pysolr = "^3.9.0"
 pytz = "^2022.1"
 python-dotenv = "^1.0.0"
 requests = "^2.31.0"
-setuptools = "^75.0.0"
+setuptools = "^83.0.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.16.0"
