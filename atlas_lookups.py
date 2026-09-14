@@ -30,8 +30,7 @@ def build_doc(lookup: SimpleNamespace) -> Dict:
 
 cnxn, cursor = connect()
 
-cursor.execute(
-    """
+cursor.execute("""
 select
 concat('financial_impact_', cast(id as nvarchar)) as id,
 'financial_impact' as item_type,
@@ -110,8 +109,7 @@ concat('user_roles_', cast(UserRolesId as nvarchar)) as id,
 Name as 'item_name',
 UserRolesId as 'atlas_id'
 from app.UserRoles
-"""
-)
+""")
 
 columns = [column[0] for column in cursor.description]
 

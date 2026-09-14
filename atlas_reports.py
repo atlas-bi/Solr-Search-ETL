@@ -124,8 +124,7 @@ cursor.execute("select * into #report_temp from ReportObject;")
 cursor.execute("select * into #user_temp from [User];")
 
 
-cursor.execute(
-    """select --top 100
+cursor.execute("""select --top 100
   r.ReportObjectID as report_id
 , r.SourceServer as system_server
 , r.ReportServerPath as server_path
@@ -193,8 +192,7 @@ left outer join app.OrganizationalValue ov on ov.id = d.OrganizationalValueID
 left outer join #user_temp as requester on requester.UserId = d.Requester
 left outer join #user_temp as ops_owner on ops_owner.UserId = d.OperationalOwnerUserID
 
-"""
-)
+""")
 
 columns = [column[0] for column in cursor.description]
 

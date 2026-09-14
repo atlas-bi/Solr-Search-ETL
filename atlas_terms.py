@@ -91,8 +91,7 @@ def build_doc(term: SimpleNamespace) -> Dict:
 
 cnxn, cursor = connect()
 
-cursor.execute(
-    """
+cursor.execute("""
 select
   termid as term_id
 , name as name
@@ -125,8 +124,7 @@ from app.Term t
 left outer join dbo.[User] approver on t.ApprovedByUserId = approver.UserId
 left outer join dbo.[User] updater on t.UpdatedByUserId = updater.UserId
 
-"""
-)
+""")
 
 columns = [column[0] for column in cursor.description]
 

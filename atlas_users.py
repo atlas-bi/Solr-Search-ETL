@@ -40,8 +40,7 @@ def build_doc(user: SimpleNamespace) -> Dict:
 
 cnxn, cursor = connect()
 
-cursor.execute(
-    """select u.userid as user_id
+cursor.execute("""select u.userid as user_id
 , isnull(fullname_calc, u.accountname) as name
 , employeeid as employee_id
 , email as email
@@ -52,8 +51,7 @@ cursor.execute(
 , stuff((select '|' + g.GroupName from dbo.UserGroups g inner join dbo.UserGroupsMembership m on g.GroupId = m.GroupId where m.UserId = u.userid FOR XML PATH('')), 1, 1, '') groups
 
 from dbo.[user] u
-"""
-)
+""")
 
 columns = [column[0] for column in cursor.description]
 

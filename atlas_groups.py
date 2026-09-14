@@ -36,8 +36,7 @@ def build_doc(group: SimpleNamespace) -> Dict:
 
 cnxn, cursor = connect()
 
-cursor.execute(
-    """
+cursor.execute("""
 select
   g.groupid as group_id
 , groupname as name
@@ -47,8 +46,7 @@ select
 , case when isnull((select Value from app.GlobalSiteSettings where Name = 'groups_search_visibility'),'N') = 'N' then 'N' else 'Y' end as visible
 , STUFF((select '~|~' +  u.FullName_calc from dbo.[User] u inner join dbo.UserGroupsMembership m on u.UserId = m.UserId where m.GroupId = g.GroupId  FOR XML PATH('')), 1, 3, '') users
 
-from dbo.UserGroups g"""
-)
+from dbo.UserGroups g""")
 
 columns = [column[0] for column in cursor.description]
 
