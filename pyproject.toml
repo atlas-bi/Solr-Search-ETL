@@ -1,47 +1,31 @@
-[tool.poetry]
+[project]
 name = "atlas-etl-solr"
-package-mode = false
 version = "1.5.2"
 description = "Atlas BI Library Search ETL"
-authors = ["Christopher Pickering <cpickering@rhc.net>"]
+authors = [{ name = "Christopher Pickering", email = "cpickering@rhc.net" }]
 license = "GPL-3.0-or-later"
+requires-python = ">=3.8.2,<4.0"
+dependencies = [
+    "pyodbc>=5.0.0,<6.0.0",
+    "pysolr>=3.9.0,<4.0.0",
+    "pytz>=2022.1,<2023.0",
+    "python-dotenv>=1.0.0,<2.0.0",
+    "requests>=2.31.0,<3.0.0",
+    "setuptools>=75.0.0,<76.0.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.8.2"
-pyodbc = "^5.0.0"
-pysolr = "^3.9.0"
-pytz = "^2022.1"
-python-dotenv = "^1.0.0"
-requests = "^2.31.0"
-setuptools = "^75.0.0"
+[dependency-groups]
+dev = [
+    "ruff>=0.4.0,<0.5.0",
+    "tox>=4.0.0,<5.0.0",
+]
 
-[tool.poetry.group.dev.dependencies]
-ruff = "^0.4.0"
-isort = "^5.10.1"
-black = "^24.0.0"
-tox = "^4.0.0"
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.black]
-max_line_length = 99
-exclude = '''
-    /(
-        \.git
-      | \.tox
-      | \.venv
-
-      # The following are specific to Black, you probably don't want those.
-      | blib2to3
-      | tests/data
-      | node_modules
-    )/
-    '''
-
-[tool.isort]
-profile = "black"
+[tool.uv]
+package = false
 
 [tool.ruff]
-select = ["S", 'T20', 'SIM', 'C4', 'PL', 'N', 'A']
+line-length = 99
+extend-exclude = ["node_modules"]
+
+[tool.ruff.lint]
+select = ["S", "T20", "SIM", "C4", "PL", "N", "A", "I"]

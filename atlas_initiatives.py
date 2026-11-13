@@ -44,46 +44,28 @@ def build_doc(initiative: SimpleNamespace) -> Dict:
             else []
         ),
         "linked_description": (
-            [
-                clean_description(x)
-                for x in initiative.collection_description.split("~|~")
-                if x
-            ]
+            [clean_description(x) for x in initiative.collection_description.split("~|~") if x]
             if initiative.collection_description
             else []
         )
         + (
-            [
-                clean_description(x)
-                for x in initiative.term_description.split("~|~")
-                if x
-            ]
+            [clean_description(x) for x in initiative.term_description.split("~|~") if x]
             if initiative.term_description
             else []
         )
         + (
-            [
-                clean_description(x)
-                for x in initiative.report_description.split("~|~")
-                if x
-            ]
+            [clean_description(x) for x in initiative.report_description.split("~|~") if x]
             if initiative.report_description
             else []
         ),
         "related_terms": (
-            [x for x in initiative.term_name.split("~|~") if x]
-            if initiative.term_name
-            else []
+            [x for x in initiative.term_name.split("~|~") if x] if initiative.term_name else []
         ),
         "related_reports": (
-            [x for x in initiative.report_name.split("~|~") if x]
-            if initiative.report_name
-            else []
+            [x for x in initiative.report_name.split("~|~") if x] if initiative.report_name else []
         ),
         "linked_name": (
-            [x for x in initiative.linked_name.split("~|~") if x]
-            if initiative.linked_name
-            else []
+            [x for x in initiative.linked_name.split("~|~") if x] if initiative.linked_name else []
         ),
     }
 

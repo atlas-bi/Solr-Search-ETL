@@ -29,9 +29,7 @@ def clean_doc(doc: Dict) -> Dict:
 
         return [i for i in my_list if i and i != "None"] or None
 
-    return {
-        k: clean_list(v) for k, v in doc.items() if clean_list(v) not in [None, "None"]
-    }
+    return {k: clean_list(v) for k, v in doc.items() if clean_list(v) not in [None, "None"]}
 
 
 def connect() -> Tuple[Any, Any]:

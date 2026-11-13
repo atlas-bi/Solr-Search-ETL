@@ -57,9 +57,7 @@ def build_doc(report: SimpleNamespace) -> Dict:
         "epic_template": str(report.system_template_id),
         "last_load_date": solr_date(report.etl_date),
         "query": ([x for x in report.query.split("~|~") if x] if report.query else []),
-        "fragility_tags": (
-            [x for x in report.tag.split("~|~") if x] if report.tag else []
-        ),
+        "fragility_tags": ([x for x in report.tag.split("~|~") if x] if report.tag else []),
         "related_terms": (
             [x for x in report.term_name.split("~|~") if x] if report.term_name else []
         ),
@@ -69,32 +67,20 @@ def build_doc(report: SimpleNamespace) -> Dict:
             else []
         )
         + (
-            [
-                clean_description(x)
-                for x in report.collection_description.split("~|~")
-                if x
-            ]
+            [clean_description(x) for x in report.collection_description.split("~|~") if x]
             if report.collection_description
             else []
         )
         + (
-            [
-                clean_description(x)
-                for x in report.initiative_description.split("~|~")
-                if x
-            ]
+            [clean_description(x) for x in report.initiative_description.split("~|~") if x]
             if report.initiative_description
             else []
         ),
         "related_collections": (
-            [x for x in report.collection_name.split("~|~") if x]
-            if report.collection_name
-            else []
+            [x for x in report.collection_name.split("~|~") if x] if report.collection_name else []
         ),
         "related_initiatives": (
-            [x for x in report.initiative_name.split("~|~") if x]
-            if report.initiative_name
-            else []
+            [x for x in report.initiative_name.split("~|~") if x] if report.initiative_name else []
         ),
         "documented": report.documented,
         "do_not_purge": report.do_not_purge,
