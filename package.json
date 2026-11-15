@@ -1,6 +1,6 @@
 {
   "name": "atlas-etl-solr",
-  "version": "1.5.22",
+  "version": "1.5.23",
   "description": "Atlas BI Library Search ETL",
   "private": true,
   "scripts": {
@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/atlas-bi/Solr-Search-ETL#readme",
   "devDependencies": {
-    "@semantic-release/changelog": "6.0.3",
+    "@semantic-release/changelog": "7.0.0",
     "@semantic-release/commit-analyzer": "13.0.1",
     "@semantic-release/exec": "7.1.0",
     "@semantic-release/git": "10.0.1",
