@@ -3,13 +3,12 @@
 import itertools
 import os
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from types import SimpleNamespace
 from typing import Any, Dict, Generator, List, Optional, Tuple, Union
 
 import pyodbc
 import pysolr
-import pytz
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -75,7 +74,7 @@ def solr_date(date: Any) -> Optional[str]:
         # this will still fail on invalid dates, like 9999-01-01
         try:
             return datetime.strftime(
-                date.astimezone(pytz.utc),
+                date.astimezone(timezone.utc),
                 "%Y-%m-%dT%H:%M:%SZ",
             )
 

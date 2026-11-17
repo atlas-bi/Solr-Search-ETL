@@ -1,31 +1,26 @@
 [project]
 name = "atlas-etl-solr"
-version = "1.5.2"
+version = "1.5.4"
 description = "Atlas BI Library Search ETL"
 authors = [{ name = "Christopher Pickering", email = "cpickering@rhc.net" }]
 license = "GPL-3.0-or-later"
-requires-python = ">=3.8.2,<4.0"
+requires-python = ">=3.9"
 dependencies = [
-    "pyodbc>=5.0.0,<6.0.0",
-    "pysolr>=3.9.0,<4.0.0",
-    "pytz>=2022.1,<2023.0",
-    "python-dotenv>=1.0.0,<2.0.0",
-    "requests>=2.31.0,<3.0.0",
-    "setuptools>=75.0.0,<76.0.0",
+  "pyodbc>=5.0.0",
+  "pysolr>=3.9.0",
+  "python-dotenv>=1.0.0",
+  "requests>=2.31.0",
 ]
 
 [dependency-groups]
-dev = [
-    "ruff>=0.4.0,<0.5.0",
-    "tox>=4.0.0,<5.0.0",
-]
+dev = ["ruff>=0.8.0"]
 
 [tool.uv]
 package = false
 
 [tool.ruff]
+target-version = "py39"
 line-length = 99
-extend-exclude = ["node_modules"]
 
 [tool.ruff.lint]
-select = ["S", "T20", "SIM", "C4", "PL", "N", "A", "I"]
+select = ["S", "T20", "SIM", "C4", "PL", "N", "A"]
