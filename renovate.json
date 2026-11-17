@@ -1,38 +1,25 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base",
-    "group:allNonMajor",
-    ":separateMultipleMajorReleases",
+    "config:recommended",
     ":ignoreUnstable",
     ":enableVulnerabilityAlertsWithLabel(security)",
-    ":rebaseStalePrs",
-    ":npm",
-    "npm:unpublishSafe"
+    "group:all"
   ],
   "baseBranches": ["dev"],
-  "bumpVersion": "patch",
   "commitMessagePrefix": "chore(deps)",
   "labels": ["maintenance", "renovate"],
+  "schedule": ["before 10pm on the first day of the month"],
+  "timezone": "America/Chicago",
+  "rangeStrategy": "bump",
   "packageRules": [
     {
-      "matchUpdateTypes": ["pin","digest", "minor", "patch"],
+      "matchUpdateTypes": ["pin", "digest", "minor", "patch"],
       "automerge": true
     },
     {
-      "matchDepTypes": ["devDependencies"],
-      "automerge": true
-    },
-    {
-      "extends": "packages:linters",
-      "groupName": "linters",
-      "automerge": true
-    },
-    {
-      "extends": "packages:test",
-      "groupName": "test packages",
+      "matchDepTypes": ["devDependencies", "dependency-groups"],
       "automerge": true
     }
-  ],
-  "schedule": ["before 10pm on Sunday"],
-  "timezone": "America/Chicago"
+  ]
 }
