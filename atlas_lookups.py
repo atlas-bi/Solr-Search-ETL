@@ -9,9 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SOLRLOOKUPURL = os.environ.get(
-    "SOLRLOOKUPURL", "https://solr.example.com/solr/atlas_lookups"
-)
+SOLRLOOKUPURL = os.environ.get("SOLRLOOKUPURL", "https://solr.example.com/solr/atlas_lookups")
 
 from functions import clean_doc, connect, rows, solr_load_batch
 
